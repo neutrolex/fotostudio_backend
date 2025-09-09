@@ -325,5 +325,12 @@ GET    /api/audit/date-range/           # Logs por rango de fechas
 - [ ] Queries optimizadas
 - [ ] Sistema escalable
 
+## 🏗️ Contexto Multi-tenant (MySQL)
+
+- Estrategia conceptual: database-based en MySQL (BD por tenant).
+- Todos los reportes deben consumir exclusivamente datos del tenant activo.
+- Evitar uniones entre tenants al generar métricas/exports.
+- Lineamientos únicamente; la implementación técnica se definirá en la fase de desarrollo.
+
 ---
 **Responsable**: Sala 4 - Reportes y Configuración

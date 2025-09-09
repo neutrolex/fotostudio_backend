@@ -298,5 +298,12 @@ GET    /api/dashboard/revenue/ # Métricas de ingresos
 - [ ] Queries optimizadas
 - [ ] Dashboard responsivo
 
+## 🏗️ Contexto Multi-tenant (MySQL)
+
+- Enfoque conceptual: database-based (una base de datos por tenant) en MySQL.
+- Todas las consultas de negocio deben ejecutarse contra la base del tenant activo.
+- No mezclar datos entre tenants; validar `tenant` en toda operación.
+- Lineamientos únicamente; implementación a resolver en fases siguientes.
+
 ---
 **Responsable**: Sala 2 - Gestión de Negocio

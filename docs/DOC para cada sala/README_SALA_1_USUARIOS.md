@@ -191,6 +191,13 @@ DELETE /api/users/{id}/        # Eliminar usuario
 - [ ] Middleware de autorización
 - [ ] Validación de permisos en views
 
+## 🏗️ Contexto Multi-tenant (MySQL)
+
+- Enfoque conceptual: database-based en MySQL (una base de datos/schema por tenant).
+- Resolución de tenant sugerida por subdominio o cabecera `X-Tenant-ID`.
+- Autenticación/Autorización deben validar que el usuario pertenece al tenant activo.
+- No implementar lógica aquí; estos lineamientos guían al equipo para futuras fases.
+
 ## 🔄 **DEPENDENCIAS**
 
 ### **Hacia Otros Equipos**

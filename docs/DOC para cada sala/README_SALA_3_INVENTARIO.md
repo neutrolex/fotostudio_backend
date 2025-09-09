@@ -318,5 +318,12 @@ POST   /api/products/sell/{id}/        # Marcar como vendido
 - [ ] Queries optimizadas
 - [ ] Sistema escalable
 
+## 🏗️ Contexto Multi-tenant (MySQL)
+
+- Estrategia conceptual: database-based (una base MySQL por tenant).
+- Todos los catálogos, existencias y movimientos pertenecen únicamente al tenant activo.
+- Validar pertenencia de registros al tenant en altas, bajas y modificaciones.
+- Este documento solo establece lineamientos; la implementación se hará posteriormente.
+
 ---
 **Responsable**: Sala 3 - Inventario y Producción

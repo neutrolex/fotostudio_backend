@@ -11,26 +11,40 @@ Módulos Identificados del Sistema:
     8. Reportes             - Análisis financiero y de producción           - SALA-4
     9. Configuración        - Parámetros del sistema                        - SALA-4
     10. Perfil de Usuario   - FALTA IMPLEMENTAR                             - SALA-1
-
-ESTRUCTURA IDEAL DEL PROYECTO DJANGO:
+    11. tenants             - Falta por desarrollar                         - SALA-4
+ESTRUCTURA IDEAL DEL PROYECTO DJANGO CON MULTI-TENANT:
 
 fotostudio_backend/
 ├── manage.py
 ├── requirements.txt
-├── .env.example
+├── env.example                         # Configuración de entorno
 ├── .gitignore
 ├── README.md
 ├── fotostudio/                         # Configuración principal
 │   ├── __init__.py
 │   ├── settings/
 │   │   ├── __init__.py
-│   │   ├── base.py                     # Configuración base
+│   │   ├── base.py                     # Configuración base con multi-tenant
 │   │   ├── development.py              # Configuración desarrollo
 │   │   ├── production.py               # Configuración producción
 │   │   └── testing.py                  # Configuración testing
 │   ├── urls.py                         # URLs principales
 │   ├── wsgi.py
 │   └── asgi.py
+├── tenants/                            # App de multi-tenancy
+│   ├── __init__.py
+│   ├── models.py                       # Modelos Tenant y Domain
+│   ├── admin.py                        # Admin de tenants
+│   ├── views.py                        # Vistas de tenants
+│   ├── serializers.py                  # Serializers de tenants
+│   ├── urls.py                         # URLs de tenants
+│   └── tests.py                        # Tests de tenants
+├── middlewares/                        # Middlewares personalizados
+│   ├── __init__.py
+│   ├── tenant_middleware.py            # Middleware multi-tenant
+│   ├── authentication.py               # Middleware de autenticación
+│   ├── logging.py                      # Middleware de logging
+│   └── cors.py                         # Middleware CORS
 ├── apps/                               # Apps de negocio
 │   ├── __init__.py
 │   ├── users/                          # Gestión de usuarios
@@ -47,6 +61,15 @@ fotostudio_backend/
 │   │       ├── test_models.py
 │   │       ├── test_views.py
 │   │       └── test_serializers.py
+│   ├── tenants/                         # Tenant
+│   │   ├── __init__.py
+│   │   ├── models.py
+│   │   ├── serializers.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   ├── admin.py
+│   │   ├── services.py
+│   │   └── tests/
 │   ├── orders/                         # Gestión de pedidos
 │   │   ├── __init__.py
 │   │   ├── models.py
@@ -169,6 +192,81 @@ Módulos de Soporte:
     -middlewares: Autenticación, logging y CORS
     -docs: Documentación API, despliegue y desarrollo
 
+🏢 ARQUITECTURA MULTI-TENANT IMPLEMENTADA
+
+## 🏗️ **CONFIGURACIÓN MULTI-TENANT**
+
+### **Estrategia Implementada: Schema-Based Multi-Tenancy**
+- **Separación por Schemas**: Cada tenant tiene su propio schema en PostgreSQL
+- **Aislamiento de Datos**: Datos completamente separados entre tenants
+- **Escalabilidad**: Fácil agregar nuevos tenants sin afectar existentes
+- **Mantenimiento**: Backup y restauración independiente por tenant
+
+Nota (alineación con MySQL): A nivel conceptual, este proyecto operará de forma multi-tenant sobre MySQL con enfoque database-based (una base de datos/schema por tenant). La resolución de tenant se sugiere por subdominio o cabecera y el enrutamiento seleccionará la base de datos del tenant antes de ejecutar consultas. Este documento solo define lineamientos; la implementación se hará en fases de desarrollo.
+
+### **Componentes Multi-Tenant Implementados**
+
+#### **1. App `tenants`**
+- **Modelo Tenant**: Información del negocio (nombre, tipo, plan de suscripción)
+- **Modelo Domain**: Dominios/subdominios para cada tenant
+- **Admin Personalizado**: Gestión de tenants desde Django Admin
+- **APIs REST**: Endpoints para gestión de tenants
+
+#### **2. Middleware Personalizado**
+- **CustomTenantMiddleware**: Manejo automático de tenants por dominio
+- **TenantLoggingMiddleware**: Logging específico por tenant
+- **TenantSecurityMiddleware**: Validaciones de seguridad por tenant
+
+#### **3. Configuración de Base de Datos**
+- **PostgreSQL con django-tenants**: Soporte nativo para multi-tenancy
+- **Router de Tenants**: Enrutamiento automático de queries
+- **Migraciones por Schema**: Cada tenant tiene sus propias migraciones
+
+### **Flujo de Funcionamiento Multi-Tenant**
+
+1. **Request Incoming**: Cliente hace request a subdominio (ej: empresa1.fotostudio.com)
+2. **Tenant Resolution**: Middleware identifica el tenant por dominio
+3. **Schema Switch**: Django cambia automáticamente al schema del tenant
+4. **Data Isolation**: Todas las queries se ejecutan en el schema correcto
+5. **Response**: Respuesta con datos específicos del tenant
+
+### **Configuración de Entornos**
+
+#### **Desarrollo**
+- Base de datos local PostgreSQL
+- Cache en memoria
+- Logging detallado
+- CORS permisivo
+
+#### **Producción**
+- Base de datos PostgreSQL en servidor
+- Cache Redis
+- Logging optimizado
+- Seguridad SSL/TLS
+
+### **APIs Multi-Tenant Implementadas**
+
+#### **Gestión de Tenants**
+```
+GET    /api/tenants/                    # Listar tenants (admin)
+GET    /api/tenants/{id}/               # Detalle tenant
+GET    /api/tenants/current/            # Tenant actual
+```
+
+#### **Todas las APIs de Negocio son Multi-Tenant**
+- Cada endpoint automáticamente filtra por tenant
+- Datos completamente aislados entre tenants
+- No es necesario agregar filtros manuales
+
+### **Ventajas de la Implementación**
+
+✅ **Aislamiento Completo**: Datos de cada tenant completamente separados
+✅ **Escalabilidad**: Fácil agregar nuevos tenants
+✅ **Mantenimiento**: Backup/restore independiente por tenant
+✅ **Seguridad**: Imposible acceso cruzado entre tenants
+✅ **Performance**: Queries optimizadas por schema
+✅ **Flexibilidad**: Cada tenant puede tener configuraciones diferentes
+
 🏢 DIVISIÓN EN 4 SALAS DE DESARROLLO
 
 SALA 1: USUARIOS Y AUTENTICACIÓN 🔐
@@ -218,10 +316,20 @@ Módulos a Desarrollar:
     ✅ Sistema de exportación - PDF, Excel, CSV
     ✅ APIs de métricas - KPIs y dashboards
     ✅ Configuración por entornos - Dev, Prod, Test
+    ✅ App tenants - Multi-tenant (infraestructura, MySQL database-based)
+        - Modelos Tenant/Domain (definición de inquilinos y dominios)
+        - Resolución de tenant por subdominio o cabecera
+        - Enrutamiento a BD del tenant (selección de base de datos por request)
+        - Middleware base de contexto de tenant (sin lógica de negocio)
+        - Comandos/lineamientos de gestión (crear tenant, migraciones por tenant)
 
 Dependencias:
     Hacia otros equipos: Proporciona reportes y configuración
     De otros equipos: Todas las apps anteriores (Sala 1, 2, 3)
+    Colaboraciones específicas para multi-tenant:
+        - Sala 1 (Usuarios): incluir/validar `tenant` en autenticación (claims JWT) y permisos
+        - Sala 2 (Negocio): consumir contexto de tenant en servicios/queries (sin mezclar datos)
+        - Sala 3 (Inventario/Producción): validar pertenencia al tenant en operaciones y reportes
 
 📅 PLAN DE TRABAJO INCREMENTAL - 1 SEMANA
 
