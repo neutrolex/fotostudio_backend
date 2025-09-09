@@ -7,11 +7,12 @@ Módulos Identificados del Sistema:
     5. Inventario           - Control de 7 categorías de materiales         - SALA-3
     6. Orden de Producción  - Control de producción y mermas                - SALA-3
     7. Productos Terminados - Gestión de cuadros y productos finales        - SALA-3
-    7. Agenda               - Programación de citas y entregas              - SALA-2
-    8. Reportes             - Análisis financiero y de producción           - SALA-4
-    9. Configuración        - Parámetros del sistema                        - SALA-4
-    10. Perfil de Usuario   - FALTA IMPLEMENTAR                             - SALA-1
-    11. tenants             - Falta por desarrollar                         - SALA-4
+    8. Agenda               - Programación de citas y entregas              - SALA-2
+    9. Reportes             - Análisis financiero y de producción           - SALA-4
+    10. Configuración       - Parámetros del sistema                        - SALA-4
+    11. Perfil de Usuario   - FALTA IMPLEMENTAR                             - SALA-1
+    12. tenants             - Falta por desarrollar                         - SALA-4
+
 ESTRUCTURA IDEAL DEL PROYECTO DJANGO CON MULTI-TENANT:
 
 fotostudio_backend/
@@ -31,14 +32,6 @@ fotostudio_backend/
 │   ├── urls.py                         # URLs principales
 │   ├── wsgi.py
 │   └── asgi.py
-├── tenants/                            # App de multi-tenancy
-│   ├── __init__.py
-│   ├── models.py                       # Modelos Tenant y Domain
-│   ├── admin.py                        # Admin de tenants
-│   ├── views.py                        # Vistas de tenants
-│   ├── serializers.py                  # Serializers de tenants
-│   ├── urls.py                         # URLs de tenants
-│   └── tests.py                        # Tests de tenants
 ├── middlewares/                        # Middlewares personalizados
 │   ├── __init__.py
 │   ├── tenant_middleware.py            # Middleware multi-tenant
@@ -114,7 +107,7 @@ fotostudio_backend/
 │   │   ├── admin.py
 │   │   ├── services.py
 │   │   └── tests/
-│   ├── products/                       # Productos terminados
+│   ├── materials/                       # todos los materiales y Productos terminados 
 │   │   ├── __init__.py
 │   │   ├── models.py
 │   │   ├── serializers.py
@@ -129,15 +122,6 @@ fotostudio_backend/
 │   │   ├── views.py
 │   │   ├── urls.py
 │   │   ├── admin.py
-│   │   └── tests/
-│   ├── reports/                        # Reportes y análisis
-│   │   ├── __init__.py
-│   │   ├── models.py
-│   │   ├── serializers.py
-│   │   ├── views.py
-│   │   ├── urls.py
-│   │   ├── admin.py
-│   │   ├── services.py
 │   │   └── tests/
 │   └── dashboard/                      # Dashboard y métricas
 │       ├── __init__.py
@@ -181,9 +165,9 @@ Apps de Negocio:
     -contracts: Contratos con colegios, términos y condiciones
     -inventory: 7 categorías de materiales, stock, alertas y movimientos
     -production: Órdenes de producción, mermas y trazabilidad
-    -products: Productos terminados, estados y ubicaciones
+    -materials: Productos terminados, estados,materiales y ubicaciones
     -agenda: Citas, entregas y programación
-    -reports: Reportes financieros, análisis y exportación
+    -materials: Reportes financieros, análisis y exportación
     -dashboard: Métricas, KPIs y resúmenes ejecutivos
 
 Módulos de Soporte:
@@ -197,7 +181,7 @@ Módulos de Soporte:
 ## 🏗️ **CONFIGURACIÓN MULTI-TENANT**
 
 ### **Estrategia Implementada: Schema-Based Multi-Tenancy**
-- **Separación por Schemas**: Cada tenant tiene su propio schema en PostgreSQL
+- **Separación por Schemas**: Cada tenant tiene su propio schema en mySQL
 - **Aislamiento de Datos**: Datos completamente separados entre tenants
 - **Escalabilidad**: Fácil agregar nuevos tenants sin afectar existentes
 - **Mantenimiento**: Backup y restauración independiente por tenant
@@ -300,7 +284,7 @@ Responsable: Equipo de Operaciones
 Módulos a Desarrollar:
     ✅ App inventory - 7 categorías de materiales
     ✅ App production - Órdenes de producción
-    ✅ App products - Productos terminados
+    ✅ App materials - Productos terminados y materiales
     ✅ Sistema de alertas - Stock bajo y mermas
     ✅ Trazabilidad completa - Movimientos de inventario
 
@@ -308,16 +292,15 @@ Dependencias:
     Hacia otros equipos: Proporciona datos de inventario
     De otros equipos: Sistema de autenticación (Sala 1), Modelos de pedidos (Sala 2)
 
-SALA 4: REPORTES Y CONFIGURACIÓN 📊
+SALA 4: CONFIGURACIÓN 📊
 Responsable: Equipo de Análisis y Configuración
 Módulos a Desarrollar:
-    ✅ App reports - Reportes financieros y análisis
     ✅ App config - Configuración del sistema
     ✅ Sistema de exportación - PDF, Excel, CSV
     ✅ APIs de métricas - KPIs y dashboards
     ✅ Configuración por entornos - Dev, Prod, Test
     ✅ App tenants - Multi-tenant (infraestructura, MySQL database-based)
-        - Modelos Tenant/Domain (definición de inquilinos y dominios)
+        - Modelos Tenant
         - Resolución de tenant por subdominio o cabecera
         - Enrutamiento a BD del tenant (selección de base de datos por request)
         - Middleware base de contexto de tenant (sin lógica de negocio)
@@ -329,7 +312,7 @@ Dependencias:
     Colaboraciones específicas para multi-tenant:
         - Sala 1 (Usuarios): incluir/validar `tenant` en autenticación (claims JWT) y permisos
         - Sala 2 (Negocio): consumir contexto de tenant en servicios/queries (sin mezclar datos)
-        - Sala 3 (Inventario/Producción): validar pertenencia al tenant en operaciones y reportes
+        - Sala 3 (Inventario/Producción): validar pertenencia al tenant en operaciones
 
 📅 PLAN DE TRABAJO INCREMENTAL - 1 SEMANA
 
@@ -361,7 +344,7 @@ Horario: 8:00 AM - 6:00 PM
     [ ] Sala 1: UserSerializer, LoginSerializer, ChangePasswordSerializer
     [ ] Sala 2: OrderSerializer, ClientSerializer, SchoolSerializer
     [ ] Sala 3: InventorySerializers (7 tipos), ProductionSerializer
-    [ ] Sala 4: ReportSerializer, ConfigurationSerializer
+    [ ] Sala 4: materialserializer, ConfigurationSerializer
 10:00 - 12:00 PM: Validaciones
     [ ] Sala 1: Validaciones de contraseña y email
     [ ] Sala 2: Validaciones de negocio (fechas, montos)
@@ -403,7 +386,7 @@ Horario: 8:00 AM - 6:00 PM
     [ ] Sala 1: AuthService, UserService
     [ ] Sala 2: OrderService, ClientService, DashboardService
     [ ] Sala 3: InventoryService, ProductionService
-    [ ] Sala 4: ReportService, ConfigService
+    [ ] Sala 4: materialservice, ConfigService
 10:00 - 12:00 PM: Lógica de Negocio
     [ ] Sala 1: Lógica de autenticación y permisos
     [ ] Sala 2: Cálculos de pedidos y métricas
@@ -547,9 +530,9 @@ Módulos Implementados:
     Contracts - Contratos y términos
     Inventory - 7 categorías de materiales
     Production - Órdenes de producción
-    Products - Productos terminados
+    materials - Productos terminados y materiales
     Agenda - Programación de citas
-    Reports - Reportes y análisis
+    materials - Reportes y análisis
     Dashboard - Métricas y KPIs
 
 🔌 APIs REST Implementadas una vez que este elaborado
@@ -602,13 +585,6 @@ Módulos Implementados:
     PUT    /api/production/orders/{id}/    # Actualizar orden
     POST   /api/production/register/       # Registrar producción
 
-7.Reportes
-    GET    /api/reports/financial/         # Reportes financieros
-    GET    /api/reports/inventory/         # Reportes de inventario
-    GET    /api/reports/production/        # Reportes de producción
-    GET    /api/reports/export/pdf/        # Exportar PDF
-    GET    /api/reports/export/excel/      # Exportar Excel
-
 8.Contratos 
     GET    /api/contracts/              # Listar contratos
     POST   /api/contracts/              # Crear contrato
@@ -632,14 +608,14 @@ Módulos Implementados:
     GET    /api/dashboard/revenue/      # Métricas de ingresos 
 
 11.Productos
-    GET    /api/products/                       # Productos terminados
-    POST   /api/products/                       # Crear producto
-    GET    /api/products/{id}/                  # Detalle producto
-    PUT    /api/products/{id}/                  # Actualizar producto
-    DELETE /api/products/{id}/                  # Eliminar producto
-    GET    /api/products/status/{status}/       # Productos por estado
-    GET    /api/products/location/{location}/   # Productos por ubicación
-    POST   /api/products/sell/{id}/             # Marcar como vendido
+    GET    /api/materials/                       # Productos terminados
+    POST   /api/materials/                       # Crear producto
+    GET    /api/materials/{id}/                  # Detalle producto
+    PUT    /api/materials/{id}/                  # Actualizar producto
+    DELETE /api/materials/{id}/                  # Eliminar producto
+    GET    /api/materials/status/{status}/       # Productos por estado
+    GET    /api/materials/location/{location}/   # Productos por ubicación
+    POST   /api/materials/sell/{id}/             # Marcar como vendido
 
 12.Configuración
     GET    /api/config/                     # Listar configuraciones

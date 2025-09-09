@@ -93,8 +93,8 @@
 ```
 apps/users/
 ├── __init__.py
-├── models.py              # Modelo User personalizado
-├── serializers.py         # Serializers para DRF
+├── models.py             # Modelo User personalizado
+├── serializers.py        # Serializers para DRF
 ├── views.py              # Views con DRF
 ├── urls.py               # URLs de la app
 ├── admin.py              # Admin personalizado
@@ -122,8 +122,8 @@ POST /api/auth/refresh/        # Refresh token
 
 ### **Perfil de Usuario**
 ```
-GET  /api/auth/profile/        # Obtener perfil
-PUT  /api/auth/profile/        # Actualizar perfil
+GET  /api/auth/profile/         # Obtener perfil
+PUT  /api/auth/profile/         # Actualizar perfil
 POST /api/auth/change-password/ # Cambiar contraseña
 ```
 

@@ -1,4 +1,4 @@
-# 📊 SALA 4: REPORTES Y CONFIGURACIÓN
+# 📊 SALA 4: CONFIGURACIÓN
 
 ## 👥 **EQUIPO RESPONSABLE**
 - **Líder**: Desarrollador Senior Backend
@@ -14,7 +14,7 @@
 
 ## 📋 **MÓDULOS A DESARROLLAR**
 
-### **1. App `reports` - Sistema de Reportes**
+### **1. App `materials` - Sistema de Reportes**
 - **Reportes financieros** con análisis de rentabilidad
 - **Reportes de inventario** con tendencias y proyecciones
 - **Reportes de producción** con eficiencia y mermas
@@ -48,7 +48,7 @@
 - [ ] Tests básicos de modelos
 
 ### **Día 2 - Serializers y Validaciones**
-- [ ] ReportSerializer con filtros
+- [ ] materialserializer con filtros
 - [ ] ConfigurationSerializer
 - [ ] MetricSerializer con cálculos
 - [ ] AuditLogSerializer
@@ -65,7 +65,7 @@
 - [ ] Tests de views con APITestCase
 
 ### **Día 4 - Servicios y Lógica de Negocio**
-- [ ] ReportService para generación de reportes
+- [ ] materialservice para generación de reportes
 - [ ] ConfigurationService para configuración
 - [ ] MetricService para cálculos de KPIs
 - [ ] ExportService para exportación
@@ -93,14 +93,14 @@
 ## 🔧 **ESTRUCTURA DE CARPETAS**
 
 ```
-apps/reports/
+apps/materials/
 ├── __init__.py
 ├── models.py              # Modelos Report, Metric
 ├── serializers.py         # Serializers de reportes
 ├── views.py              # Views de reportes
 ├── urls.py               # URLs de reportes
 ├── admin.py              # Admin de reportes
-├── services.py           # ReportService, MetricService
+├── services.py           # materialservice, MetricService
 ├── utils.py              # Utilidades de exportación
 └── tests/
 
@@ -126,20 +126,20 @@ utils/
 
 ### **Reportes**
 ```
-GET    /api/reports/                    # Listar reportes
-POST   /api/reports/                    # Crear reporte
-GET    /api/reports/{id}/               # Detalle reporte
-PUT    /api/reports/{id}/               # Actualizar reporte
-DELETE /api/reports/{id}/               # Eliminar reporte
+GET    /api/materials/                    # Listar reportes
+POST   /api/materials/                    # Crear reporte
+GET    /api/materials/{id}/               # Detalle reporte
+PUT    /api/materials/{id}/               # Actualizar reporte
+DELETE /api/materials/{id}/               # Eliminar reporte
 
-GET    /api/reports/financial/          # Reportes financieros
-GET    /api/reports/inventory/          # Reportes de inventario
-GET    /api/reports/production/         # Reportes de producción
-GET    /api/reports/clients/            # Reportes de clientes
+GET    /api/materials/financial/          # Reportes financieros
+GET    /api/materials/inventory/          # Reportes de inventario
+GET    /api/materials/production/         # Reportes de producción
+GET    /api/materials/clients/            # Reportes de clientes
 
-GET    /api/reports/export/pdf/{id}/    # Exportar PDF
-GET    /api/reports/export/excel/{id}/  # Exportar Excel
-GET    /api/reports/export/csv/{id}/    # Exportar CSV
+GET    /api/materials/export/pdf/{id}/    # Exportar PDF
+GET    /api/materials/export/excel/{id}/  # Exportar Excel
+GET    /api/materials/export/csv/{id}/    # Exportar CSV
 ```
 
 ### **Configuración**

@@ -36,7 +36,7 @@
 - Trazabilidad desde materia prima hasta producto final
 - Cálculo de eficiencia de producción
 
-### **3. App `products` - Productos Terminados**
+### **3. App `materials` - Productos Terminados**
 - Gestión de productos finales
 - Estados del producto (En Producción, En Almacén, En Tienda, Vendido)
 - Control de ubicación y precios
@@ -57,7 +57,7 @@
 ### **Día 2 - Serializers y Validaciones**
 - [ ] Serializers para 7 tipos de inventario
 - [ ] ProductionSerializer con validaciones
-- [ ] ProductSerializer con estados
+- [ ] materialserializer con estados
 - [ ] MovementSerializer con historial
 - [ ] Validaciones de stock y cantidades
 - [ ] Validaciones de mermas
@@ -75,7 +75,7 @@
 ### **Día 4 - Servicios y Lógica de Negocio**
 - [ ] InventoryService para gestión de stock
 - [ ] ProductionService para órdenes de producción
-- [ ] ProductService para productos terminados
+- [ ] materialservice para productos terminados
 - [ ] MovementService para movimientos
 - [ ] AlertService para notificaciones
 - [ ] Tests de servicios
@@ -123,14 +123,14 @@ apps/production/
 ├── services.py           # ProductionService
 └── tests/
 
-apps/products/
+apps/materials/
 ├── __init__.py
 ├── models.py              # Modelo Product
-├── serializers.py         # ProductSerializer
+├── serializers.py         # materialserializer
 ├── views.py              # Views de productos
 ├── urls.py               # URLs de productos
 ├── admin.py              # Admin de productos
-├── services.py           # ProductService
+├── services.py           # materialservice
 └── tests/
 ```
 
@@ -195,15 +195,15 @@ GET    /api/production/waste/          # Reporte de mermas
 
 ### **Productos Terminados**
 ```
-GET    /api/products/                  # Productos terminados
-POST   /api/products/                  # Crear producto
-GET    /api/products/{id}/             # Detalle producto
-PUT    /api/products/{id}/             # Actualizar producto
-DELETE /api/products/{id}/             # Eliminar producto
+GET    /api/materials/                  # Productos terminados
+POST   /api/materials/                  # Crear producto
+GET    /api/materials/{id}/             # Detalle producto
+PUT    /api/materials/{id}/             # Actualizar producto
+DELETE /api/materials/{id}/             # Eliminar producto
 
-GET    /api/products/status/{status}/  # Productos por estado
-GET    /api/products/location/{location}/ # Productos por ubicación
-POST   /api/products/sell/{id}/        # Marcar como vendido
+GET    /api/materials/status/{status}/  # Productos por estado
+GET    /api/materials/location/{location}/ # Productos por ubicación
+POST   /api/materials/sell/{id}/        # Marcar como vendido
 ```
 
 ## 🧪 **TESTS OBLIGATORIOS**

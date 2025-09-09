@@ -12,9 +12,9 @@ Backend en Django para la gestión integral de un negocio de fotografía y enmar
 - **contracts**: contratos escolares y vigencias.
 - **inventory**: 7 categorías de materiales y movimientos.
 - **production**: órdenes de producción y mermas.
-- **products**: productos terminados y ubicaciones.
+- **materials**: productos terminados y ubicaciones.
 - **agenda**: citas y recordatorios.
-- **reports**: reportes y exportaciones.
+- **materials**: reportes y exportaciones.
 - **dashboard**: métricas y KPIs.
 
 ## 🏗️ Multi-tenant (Conceptual)
