@@ -140,9 +140,6 @@ fotostudio_backend/
 │   ├── authentication.py               # Middleware de autenticación
 │   ├── logging.py                      # Middleware de logging
 │   └── cors.py                         # Middleware CORS
-├── static/                             # Archivos estáticos
-├── media/                              # Archivos de medios
-├── locale/                             # Archivos de traducción
 ├── docs/                               # Documentación
 │   ├── api/                            # Documentación API
 │   ├── deployment/                     # Guías de despliegue
