@@ -15,8 +15,8 @@ class PinturaAcabado(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'PinturaAcabado'
+        managed = True
+        db_table = 'pintura_acabado'
 
     def __str__(self):
         return self.nombre
@@ -34,8 +34,8 @@ class MaterialImpresion(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'MaterialImpresion'
+        managed = True
+        db_table = 'material_impresion'
 
     def __str__(self):
         return self.nombre
@@ -53,8 +53,8 @@ class MaterialRecordatorio(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'MaterialRecordatorio'
+        managed = True
+        db_table = 'material_recordatorio'
 
     def __str__(self):
         return self.nombre
@@ -72,8 +72,8 @@ class SoftwareEquipo(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'SoftwareEquipo'
+        managed = True
+        db_table = 'software_equipo'
 
     def __str__(self):
         return self.nombre
@@ -91,8 +91,8 @@ class MaterialPintura(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'MaterialPintura'
+        managed = True
+        db_table = 'material_pintura'
 
     def __str__(self):
         return self.nombre
@@ -110,8 +110,8 @@ class MaterialDiseno(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'MaterialDiseno'
+        managed = True
+        db_table = 'material_diseno'
 
     def __str__(self):
         return self.nombre
@@ -128,8 +128,8 @@ class ProductoTerminado(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'ProductoTerminado'
+        managed = True
+        db_table = 'producto_terminado'
 
     def __str__(self):
         return self.nombre
@@ -150,5 +150,5 @@ class MaterialVarilla(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        managed = False
-        db_table = 'MaterialVarilla'
+        managed = True
+        db_table = 'material_varilla'

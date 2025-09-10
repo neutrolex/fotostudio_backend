@@ -38,63 +38,35 @@
 - Permisos granulares por endpoint
 - Middleware de autorización
 
-## ✅ **CHECKLIST DE ENTREGABLES**
+## ✅ Plan de 3 días (Sala 1 - Usuarios y Autenticación)
 
-### **Día 1 - Configuración**
-- [ ] Configurar proyecto Django
-- [ ] Instalar dependencias (DRF, JWT, etc.)
-- [ ] Configurar settings por entornos
-- [ ] Crear estructura de carpetas
+Estado actual:
+- [hecho] App `users` creada, migraciones iniciales del proyecto ejecutadas.
+- [pendiente] Endpoints JWT, perfiles, permisos y middleware.
 
-### **Día 2 - Modelos y Serializers**
-- [ ] Crear modelo User personalizado
-- [ ] Implementar UserSerializer
-- [ ] Implementar LoginSerializer
-- [ ] Implementar ChangePasswordSerializer
-- [ ] Implementar UserProfileSerializer
-- [ ] Tests unitarios de serializers
+Día 1 (Base mínima funcional):
+- [ ] Activar DRF y SimpleJWT en settings.
+- [ ] Endpoints: `POST /api/auth/login/`, `POST /api/auth/refresh/`.
+- [ ] `GET /api/auth/profile/` (solo lectura) para usuario autenticado.
+- [ ] Swagger: describir endpoints de auth.
 
-### **Día 3 - Views y Endpoints**
-- [ ] UserListCreateView (admin)
-- [ ] UserDetailView (admin)
-- [ ] UserProfileView (usuario autenticado)
-- [ ] LoginView con JWT
-- [ ] LogoutView
-- [ ] ChangePasswordView
-- [ ] Tests de views con APITestCase
+Día 2 (CRUD y seguridad):
+- [ ] `PUT /api/auth/profile/` y `POST /api/auth/change-password/`.
+- [ ] `GET/POST /api/users/`, `GET/PUT/DELETE /api/users/{id}/` (solo admin).
+- [ ] Permisos por rol (admin/staff/user) y tests de permisos.
 
-### **Día 4 - Servicios y Middleware**
-- [ ] AuthService para lógica de autenticación
-- [ ] UserService para gestión de usuarios
-- [ ] Middleware de autenticación JWT
-- [ ] Middleware de permisos
-- [ ] Tests de servicios
-
-### **Día 5 - Integración y Testing**
-- [ ] Configurar URLs principales
-- [ ] Integrar con proyecto principal
-- [ ] Tests de integración completos
-- [ ] Tests con Postman
-- [ ] Coverage mínimo 90%
-
-### **Día 6 - Documentación**
-- [ ] Documentación Swagger/OpenAPI
-- [ ] Ejemplos de uso de APIs
-- [ ] Guías de instalación
-- [ ] README de la app
-
-### **Día 7 - Presentación**
-- [ ] Demo del sistema de autenticación
-- [ ] Presentación de funcionalidades
-- [ ] Entrega de documentación
+Día 3 (Harden y multi-tenant):
+- [ ] Middleware JWT que inyecte/valide `tenant` en claims.
+- [ ] Validaciones de seguridad (password/email) y rate limiting de login.
+- [ ] Tests de integración de autenticación y actualización de Swagger.
 
 ## 🔧 **ESTRUCTURA DE CARPETAS**
 
 ```
 apps/users/
 ├── __init__.py
-├── models.py             # Modelo User personalizado
-├── serializers.py        # Serializers para DRF
+├── models.py              # Modelo User personalizado
+├── serializers.py         # Serializers para DRF
 ├── views.py              # Views con DRF
 ├── urls.py               # URLs de la app
 ├── admin.py              # Admin personalizado
@@ -122,8 +94,8 @@ POST /api/auth/refresh/        # Refresh token
 
 ### **Perfil de Usuario**
 ```
-GET  /api/auth/profile/         # Obtener perfil
-PUT  /api/auth/profile/         # Actualizar perfil
+GET  /api/auth/profile/        # Obtener perfil
+PUT  /api/auth/profile/        # Actualizar perfil
 POST /api/auth/change-password/ # Cambiar contraseña
 ```
 

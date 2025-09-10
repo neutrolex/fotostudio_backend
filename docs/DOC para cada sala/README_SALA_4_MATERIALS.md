@@ -38,57 +38,26 @@
 - **Comparativas** entre períodos
 - **Proyecciones** y forecasting
 
-## ✅ **CHECKLIST DE ENTREGABLES**
+## ✅ Plan de 3 días (Sala 4 - Reportes, Configuración y Tenants)
 
-### **Día 1 - Configuración y Modelos**
-- [ ] Configurar estructura de carpetas
-- [ ] Crear modelos Report, Configuration, Metric
-- [ ] Crear modelo AuditLog para auditoría
-- [ ] Configurar migraciones iniciales
-- [ ] Tests básicos de modelos
+Estado actual:
+- [hecho] App `tenants` con endpoints `list/detail/current` funcionando.
+- [pendiente] Reportes, configuración y resolución/enforcer multi-tenant.
 
-### **Día 2 - Serializers y Validaciones**
-- [ ] materialserializer con filtros
-- [ ] ConfigurationSerializer
-- [ ] MetricSerializer con cálculos
-- [ ] AuditLogSerializer
-- [ ] Validaciones de fechas y rangos
-- [ ] Tests unitarios de serializers
+Día 1 (setup y mínimos):
+- [ ] Variables de entorno y `ALLOWED_HOSTS`; `.env.example`.
+- [ ] Swagger inicial y README de arranque.
+- [ ] Resolver tenant por subdominio y fallback cabecera `X-Tenant-ID` (solo DEV).
 
-### **Día 3 - Views y Endpoints**
-- [ ] ReportListCreateView con filtros
-- [ ] ReportDetailView con exportación
-- [ ] ConfigurationListCreateView
-- [ ] MetricView con KPIs
-- [ ] AuditLogView con historial
-- [ ] ExportView para múltiples formatos
-- [ ] Tests de views con APITestCase
+Día 2 (reportes y configuración):
+- [ ] Reportes mínimos: finanzas (totales) e inventario (stock bajo) en CSV.
+- [ ] Configuración básica: parámetros de stock y flags del sistema.
+- [ ] Auditoría mínima: registrar eventos claves en BD.
 
-### **Día 4 - Servicios y Lógica de Negocio**
-- [ ] materialservice para generación de reportes
-- [ ] ConfigurationService para configuración
-- [ ] MetricService para cálculos de KPIs
-- [ ] ExportService para exportación
-- [ ] AuditService para auditoría
-- [ ] Tests de servicios
-
-### **Día 5 - Integración y Testing**
-- [ ] Integrar con todas las apps anteriores
-- [ ] Configurar URLs principales
-- [ ] Tests de integración completos
-- [ ] Tests con Postman
-- [ ] Coverage mínimo 90%
-
-### **Día 6 - Documentación**
-- [ ] Documentación Swagger/OpenAPI
-- [ ] Ejemplos de uso de APIs
-- [ ] Guías de instalación
-- [ ] README de cada app
-
-### **Día 7 - Presentación**
-- [ ] Demo del sistema de reportes
-- [ ] Presentación de funcionalidades
-- [ ] Entrega de documentación
+Día 3 (enforcer y cierre):
+- [ ] Enforcer multi-tenant en todas las queries (filtros por `tenant`).
+- [ ] Integración con JWT para portar `tenant` en claims.
+- [ ] Tests críticos y Swagger actualizado con ejemplos.
 
 ## 🔧 **ESTRUCTURA DE CARPETAS**
 

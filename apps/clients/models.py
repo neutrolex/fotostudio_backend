@@ -2,21 +2,23 @@ from django.db import models
 
 # Create your models here.
 
-class Agenda(models.Model):
+class Cliente(models.Model):
     id = models.AutoField(primary_key=True)
     tenant_id = models.IntegerField()
-    user_id = models.IntegerField()
-    titulo = models.CharField(max_length=150)
-    descripcion = models.TextField(blank=True, null=True)
-    fecha_inicio = models.DateTimeField()
-    fecha_fin = models.DateTimeField(blank=True, null=True)
-    estado = models.CharField(max_length=20, choices=[('pendiente', 'pendiente'), ('confirmada', 'confirmada'), ('completada', 'completada'), ('cancelada', 'cancelada')], default='pendiente')
+    name = models.CharField(max_length=150)
+    client_type = models.CharField(max_length=10, choices=[('persona', 'persona'), ('empresa', 'empresa'), ('otro', 'otro')], default='persona')
+    contact = models.CharField(max_length=100, blank=True, null=True)
+    company_name = models.CharField(max_length=150, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    additional_details = models.TextField(blank=True, null=True)
+    email = models.CharField(unique=True, max_length=255, blank=True, null=True)
+    phone = models.CharField(max_length=50, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'Agenda'
+        managed = True
+        db_table = 'cliente'
 
     def __str__(self):
-        return f"{self.titulo} - {self.fecha_inicio}"
+        return self.name

@@ -7,12 +7,11 @@ Módulos Identificados del Sistema:
     5. Inventario           - Control de 7 categorías de materiales         - SALA-3
     6. Orden de Producción  - Control de producción y mermas                - SALA-3
     7. Productos Terminados - Gestión de cuadros y productos finales        - SALA-3
-    8. Agenda               - Programación de citas y entregas              - SALA-2
-    9. Reportes             - Análisis financiero y de producción           - SALA-4
-    10. Configuración       - Parámetros del sistema                        - SALA-4
-    11. Perfil de Usuario   - FALTA IMPLEMENTAR                             - SALA-1
-    12. tenants             - Falta por desarrollar                         - SALA-4
-
+    7. Agenda               - Programación de citas y entregas              - SALA-2
+    8. Reportes             - Análisis financiero y de producción           - SALA-4
+    9. Configuración        - Parámetros del sistema                        - SALA-4
+    10. Perfil de Usuario   - FALTA IMPLEMENTAR                             - SALA-1
+    11. tenants             - Falta por desarrollar                         - SALA-4
 ESTRUCTURA IDEAL DEL PROYECTO DJANGO CON MULTI-TENANT:
 
 fotostudio_backend/
@@ -32,6 +31,14 @@ fotostudio_backend/
 │   ├── urls.py                         # URLs principales
 │   ├── wsgi.py
 │   └── asgi.py
+├── tenants/                            # App de multi-tenancy
+│   ├── __init__.py
+│   ├── models.py                       # Modelos Tenant y Domain
+│   ├── admin.py                        # Admin de tenants
+│   ├── views.py                        # Vistas de tenants
+│   ├── serializers.py                  # Serializers de tenants
+│   ├── urls.py                         # URLs de tenants
+│   └── tests.py                        # Tests de tenants
 ├── middlewares/                        # Middlewares personalizados
 │   ├── __init__.py
 │   ├── tenant_middleware.py            # Middleware multi-tenant
@@ -107,7 +114,7 @@ fotostudio_backend/
 │   │   ├── admin.py
 │   │   ├── services.py
 │   │   └── tests/
-│   ├── materials/                       # todos los materiales y Productos terminados 
+│   ├── products/                       # Productos terminados
 │   │   ├── __init__.py
 │   │   ├── models.py
 │   │   ├── serializers.py
@@ -122,6 +129,15 @@ fotostudio_backend/
 │   │   ├── views.py
 │   │   ├── urls.py
 │   │   ├── admin.py
+│   │   └── tests/
+│   ├── reports/                        # Reportes y análisis
+│   │   ├── __init__.py
+│   │   ├── models.py
+│   │   ├── serializers.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   ├── admin.py
+│   │   ├── services.py
 │   │   └── tests/
 │   └── dashboard/                      # Dashboard y métricas
 │       ├── __init__.py
@@ -165,9 +181,9 @@ Apps de Negocio:
     -contracts: Contratos con colegios, términos y condiciones
     -inventory: 7 categorías de materiales, stock, alertas y movimientos
     -production: Órdenes de producción, mermas y trazabilidad
-    -materials: Productos terminados, estados,materiales y ubicaciones
+    -products: Productos terminados, estados y ubicaciones
     -agenda: Citas, entregas y programación
-    -materials: Reportes financieros, análisis y exportación
+    -reports: Reportes financieros, análisis y exportación
     -dashboard: Métricas, KPIs y resúmenes ejecutivos
 
 Módulos de Soporte:
@@ -181,7 +197,7 @@ Módulos de Soporte:
 ## 🏗️ **CONFIGURACIÓN MULTI-TENANT**
 
 ### **Estrategia Implementada: Schema-Based Multi-Tenancy**
-- **Separación por Schemas**: Cada tenant tiene su propio schema en mySQL
+- **Separación por Schemas**: Cada tenant tiene su propio schema en PostgreSQL
 - **Aislamiento de Datos**: Datos completamente separados entre tenants
 - **Escalabilidad**: Fácil agregar nuevos tenants sin afectar existentes
 - **Mantenimiento**: Backup y restauración independiente por tenant
@@ -284,7 +300,7 @@ Responsable: Equipo de Operaciones
 Módulos a Desarrollar:
     ✅ App inventory - 7 categorías de materiales
     ✅ App production - Órdenes de producción
-    ✅ App materials - Productos terminados y materiales
+    ✅ App products - Productos terminados
     ✅ Sistema de alertas - Stock bajo y mermas
     ✅ Trazabilidad completa - Movimientos de inventario
 
@@ -292,15 +308,16 @@ Dependencias:
     Hacia otros equipos: Proporciona datos de inventario
     De otros equipos: Sistema de autenticación (Sala 1), Modelos de pedidos (Sala 2)
 
-SALA 4: CONFIGURACIÓN 📊
+SALA 4: REPORTES Y CONFIGURACIÓN 📊
 Responsable: Equipo de Análisis y Configuración
 Módulos a Desarrollar:
+    ✅ App reports - Reportes financieros y análisis
     ✅ App config - Configuración del sistema
     ✅ Sistema de exportación - PDF, Excel, CSV
     ✅ APIs de métricas - KPIs y dashboards
     ✅ Configuración por entornos - Dev, Prod, Test
     ✅ App tenants - Multi-tenant (infraestructura, MySQL database-based)
-        - Modelos Tenant
+        - Modelos Tenant/Domain (definición de inquilinos y dominios)
         - Resolución de tenant por subdominio o cabecera
         - Enrutamiento a BD del tenant (selección de base de datos por request)
         - Middleware base de contexto de tenant (sin lógica de negocio)
@@ -312,140 +329,100 @@ Dependencias:
     Colaboraciones específicas para multi-tenant:
         - Sala 1 (Usuarios): incluir/validar `tenant` en autenticación (claims JWT) y permisos
         - Sala 2 (Negocio): consumir contexto de tenant en servicios/queries (sin mezclar datos)
-        - Sala 3 (Inventario/Producción): validar pertenencia al tenant en operaciones
+        - Sala 3 (Inventario/Producción): validar pertenencia al tenant en operaciones y reportes
 
-📅 PLAN DE TRABAJO INCREMENTAL - 1 SEMANA
+📅 PLAN DE TRABAJO CONDENSADO - 3 DÍAS
 
-DÍA 1: CONFIGURACIÓN Y SETUP ��
+
+Estado actual (resumen):
+- [hecho] Estructura de apps creada (`users`, `clients`, `contracts`, `inventory`, `materials`, `orders`, `production`, `agenda`, `dashboard`, `tenants`).
+- [hecho] Modelos base con migraciones iniciales (muchos con `managed=False`, apuntando a tablas existentes).
+- [hecho] Rutas principales configuradas en `fotostudio/urls.py` para `users` y `tenants`.
+- [hecho] Endpoints básicos en `tenants`: `list`, `detail` y `current` (JSON).
+- [pendiente] Autenticación JWT funcional y perfiles (SALA 1).
+- [pendiente] CRUDs y servicios de negocio (SALA 2).
+- [pendiente] Endpoints de inventario/producción completos (SALA 3).
+- [pendiente] Reportes, configuración y documentación (SALA 4).
+
+DÍA 1: BASE FUNCIONAL TRANSVERSAL
 Horario: 8:00 AM - 6:00 PM
-8:00 - 10:00 AM: Setup Inicial
-    [ ] Sala 1: Configurar proyecto Django, instalar dependencias
-    [ ] Sala 2: Configurar estructura de carpetas y apps
-    [ ] Sala 3: Configurar base de datos MySQL
-    [ ] Sala 4: Configurar entornos de desarrollo
-10:00 - 12:00 PM: Configuración Base
-    [ ] Sala 1: Configurar settings por entornos
-    [ ] Sala 2: Configurar DRF y JWT
-    [ ] Sala 3: Configurar migraciones iniciales
-    [ ] Sala 4: Configurar documentación Swagger
-2:00 - 4:00 PM: Modelos Base
-    [ ] Sala 1: Crear modelo User personalizado
-    [ ] Sala 2: Crear modelos Order, Client, School
-    [ ] Sala 3: Crear modelos de inventario (7 tipos)
-    [ ] Sala 4: Crear modelos Report, Configuration
-4:00 - 6:00 PM: Migraciones y Tests
-    [ ] Todas las salas: Ejecutar migraciones iniciales
-    [ ] Todas las salas: Crear tests básicos de modelos
-    [ ] Todas las salas: Configurar pytest y coverage
+08:00 - 10:00 Configuración y verificación
+    [ ] Sala 1: Activar DRF y JWT en settings; endpoints auth mínimos (`login`, `refresh`).
+    [ ] Sala 4: Configurar `ALLOWED_HOSTS`, `.env` ejemplo y `Swagger` básico.
+10:00 - 13:00 Usuarios y multi-tenant mínimo viable
+    [ ] Sala 1: `LoginView`, `RefreshView`, `ProfileView` (lectura) usando `apps.users` existente.
+    [ ] Sala 4: Ajustar `tenants/current` para subdominio/cabecera `X-Tenant-ID` y manejo de errores.
+13:00 - 14:00 Pausa
+14:00 - 17:00 Rutas y seeds mínimos
+    [ ] Sala 2: Exponer listados read-only: `orders`, `clients`, `contracts` (query simple).
+    [ ] Sala 3: Exponer listados read-only: `inventory` (categorías), `production` (órdenes).
+17:00 - 18:00 Smoke tests y documentación rápida
+    [ ] Todas: Probar endpoints clave con Postman; documentar en Swagger los read-only.
 
-DÍA 2: SERIALIZERS Y VALIDACIONES ��
+DÍA 2: CRUDS PRINCIPALES Y LÓGICA BÁSICA
 Horario: 8:00 AM - 6:00 PM
-8:00 - 10:00 AM: Serializers Básicos
-    [ ] Sala 1: UserSerializer, LoginSerializer, ChangePasswordSerializer
-    [ ] Sala 2: OrderSerializer, ClientSerializer, SchoolSerializer
-    [ ] Sala 3: InventorySerializers (7 tipos), ProductionSerializer
-    [ ] Sala 4: materialserializer, ConfigurationSerializer
-10:00 - 12:00 PM: Validaciones
-    [ ] Sala 1: Validaciones de contraseña y email
-    [ ] Sala 2: Validaciones de negocio (fechas, montos)
-    [ ] Sala 3: Validaciones de stock y cantidades
-    [ ] Sala 4: Validaciones de reportes y configuración
-2:00 - 4:00 PM: Tests de Serializers
-    [ ] Todas las salas: Tests unitarios de serializers
-    [ ] Todas las salas: Tests de validaciones
-    [ ] Todas las salas: Coverage mínimo 80%
-4:00 - 6:00 PM: Documentación
-    [ ] Todas las salas: Documentar serializers con Swagger
-    [ ] Todas las salas: Crear ejemplos de uso
-    [ ] Todas las salas: Revisar documentación generada
+08:00 - 10:00 Usuarios completos
+    [ ] Sala 1: `UserListCreate`, `UserDetail`, `ChangePassword`, `Profile` (update), permisos básicos.
+10:00 - 13:00 Negocio básico
+    [ ] Sala 2: CRUD `clients`, `orders`; filtros por estado/fecha; paginación.
+    [ ] Sala 2: `dashboard` básico: totales y métricas simples.
+13:00 - 14:00 Pausa
+14:00 - 17:00 Inventario y producción
+    [ ] Sala 3: CRUD de 2 categorías críticas (p.ej. varillas y impresión) con stock y `movements`.
+    [ ] Sala 3: `production` crear/cerrar orden; cálculo simple de mermas.
+17:00 - 18:00 Integración y pruebas
+    [ ] Todas: Integrar auth en todos los endpoints; pruebas de permisos; actualizar Swagger.
 
-DÍA 3: VIEWS Y ENDPOINTS ��
+DÍA 3: REPORTES, HARDENING Y CIERRE
 Horario: 8:00 AM - 6:00 PM
-8:00 - 10:00 AM: Views CRUD
-    [ ] Sala 1: UserListCreateView, UserDetailView, UserProfileView
-    [ ] Sala 2: OrderListCreateView, ClientListCreateView
-    [ ] Sala 3: InventoryViews (7 tipos), ProductionViews
-    [ ] Sala 4: ReportViews, ConfigurationViews
-10:00 - 12:00 PM: Views Especializadas
-    [ ] Sala 1: LoginView, LogoutView, ChangePasswordView
-    [ ] Sala 2: DashboardView, SearchView, FilterView
-    [ ] Sala 3: AlertView, MovementView, StockView
-    [ ] Sala 4: ExportView, MetricView, KPIView
-2:00 - 4:00 PM: URLs y Routing
-    [ ] Todas las salas: Configurar URLs con namespaces
-    [ ] Todas las salas: Implementar filtros y búsquedas
-    [ ] Todas las salas: Configurar paginación
-4:00 - 6:00 PM: Tests de Views
-    [ ] Todas las salas: Tests de views con APITestCase
-    [ ] Todas las salas: Tests de autenticación y permisos
-    [ ] Todas las salas: Tests de endpoints con Postman
+08:00 - 10:00 Reportes y config
+    [ ] Sala 4: Endpoints de reportes mínimos (finanzas/inventario) y exportación CSV.
+    [ ] Sala 4: Configuración del sistema (parámetros básicos, e.g. umbrales de stock).
+10:00 - 13:00 Multi-tenant y seguridad
+    [ ] Sala 4 + Sala 1: Resolver tenant por subdominio o cabecera; inyectar `tenant` en claims JWT.
+    [ ] Todas: Enforcer multi-tenant en queries (filtros por `tenant`).
+13:00 - 14:00 Pausa
+14:00 - 17:00 Calidad y performance
+    [ ] Todas: Paginación, `select_related/prefetch_related`, validaciones.
+    [ ] Todas: Tests críticos (auth, CRUDs, reportes) con cobertura razonable.
+17:00 - 18:00 Cierre y entrega
+    [ ] Todas: Swagger completo, README actualizados, scripts de arranque, checklist de despliegue.
 
-DÍA 4: SERVICIOS Y LÓGICA DE NEGOCIO ⚙️
-Horario: 8:00 AM - 6:00 PM
-8:00 - 10:00 AM: Servicios Base
-    [ ] Sala 1: AuthService, UserService
-    [ ] Sala 2: OrderService, ClientService, DashboardService
-    [ ] Sala 3: InventoryService, ProductionService
-    [ ] Sala 4: materialservice, ConfigService
-10:00 - 12:00 PM: Lógica de Negocio
-    [ ] Sala 1: Lógica de autenticación y permisos
-    [ ] Sala 2: Cálculos de pedidos y métricas
-    [ ] Sala 3: Control de stock y alertas
-    [ ] Sala 4: Generación de reportes y exportación
-2:00 - 4:00 PM: Signals y Middleware
-    [ ] Sala 1: Middleware de autenticación
-    [ ] Sala 2: Signals para notificaciones
-    [ ] Sala 3: Signals para alertas de stock
-    [ ] Sala 4: Middleware de logging
-4:00 - 6:00 PM: Tests de Servicios
-    [ ] Todas las salas: Tests unitarios de servicios
-    [ ] Todas las salas: Tests de integración
-    [ ] Todas las salas: Mocking de dependencias externas
+NOTAS DE IMPLEMENTACIÓN Y RESPONSABILIDADES POR SALA
+- Sala 1 (Usuarios y Autenticación): Auth JWT, perfiles, permisos, middleware.
+- Sala 2 (Negocio): Clients, Orders, Contracts, Agenda, Dashboard.
+- Sala 3 (Inventario/Producción): Inventario (2 categorías críticas), Movements, Production.
+- Sala 4 (Reportes/Config/Tenants): Reportes mínimos, Config parámetros, Tenants (resolución y enforcer).
 
-DÍA 5: INTEGRACIÓN Y TESTING ��
-Horario: 8:00 AM - 6:00 PM
-8:00 - 10:00 AM: Integración de Apps
-    [ ] Todas las salas: Integrar apps en proyecto principal
-    [ ] Todas las salas: Resolver dependencias entre apps
-    [ ] Todas las salas: Configurar URLs principales
-10:00 - 12:00 PM: Testing Completo
-    [ ] Todas las salas: Tests de integración completos
-    [ ] Todas las salas: Tests con Postman
-    [ ] Todas las salas: Coverage mínimo 90%
-2:00 - 4:00 PM: Documentación Final
-    [ ] Todas las salas: Completar documentación Swagger
-    [ ] Todas las salas: Crear guías de uso
-    [ ] Todas las salas: Documentar APIs con ejemplos
-4:00 - 6:00 PM: Revisión y Demo
-    [ ] Todas las salas: Revisión de código
-    [ ] Todas las salas: Demo con Postman
-    [ ] Todas las salas: Preparar presentación final
+CRITERIOS DE SALIDA AL DÍA 3
+    [ ] Login/refresh/profile funcionando con JWT.
+    [ ] CRUD básico de `clients` y `orders` con filtros y paginación.
+    [ ] Inventario mínimo (2 categorías) con movimientos y stock.
+    [ ] Producción: crear/cerrar órdenes y registrar mermas.
+    [ ] Reportes CSV (finanzas simple, inventario) y configuración básica.
+    [ ] Multi-tenant activo por subdominio/cabecera; endpoints filtrando por `tenant`.
+    [ ] Swagger actualizado y README de salas al día.
 
-DÍA 6: OPTIMIZACIÓN Y DEPLOY ��
-Horario: 8:00 AM - 2:00 PM
-8:00 - 10:00 AM: Optimización
-    [ ] Todas las salas: Optimizar queries de base de datos
-    [ ] Todas las salas: Implementar cache donde sea necesario
-    [ ] Todas las salas: Revisar performance
-10:00 - 12:00 PM: Configuración Producción
-    [ ] Todas las salas: Configurar settings de producción
-    [ ] Todas las salas: Configurar variables de entorno
-    [ ] Todas las salas: Preparar para deploy
-12:00 - 2:00 PM: Testing Final
-    [ ] Todas las salas: Tests finales en entorno de producción
-    [ ] Todas las salas: Validación con Postman
-    [ ] Todas las salas: Documentación final
+ALCANCE POSTERIOR (OPCIONAL SI HAY TIEMPO)
+    [ ] Extender inventario a 7 categorías.
+    [ ] Exportación PDF/Excel además de CSV.
+    [ ] Métricas avanzadas y dashboards enriquecidos.
 
-DÍA 7: PRESENTACIÓN Y ENTREGA ��
-Horario: 9:00 AM - 1:00 PM
-9:00 - 11:00 AM: Preparación
-    [ ] Todas las salas: Preparar demos
-    [ ] Todas las salas: Revisar documentación
-    [ ] Todas las salas: Preparar presentaciones
-11:00 - 1:00 PM: Presentación
-    [ ] Todas las salas: Demo del sistema completo
-    [ ] Todas las salas: Presentación de cada módulo
-    [ ] Todas las salas: Entrega de documentación
+ENTREGABLES Y SOPORTE
+    [ ] Postman collection actualizada.
+    [ ] Instrucciones de arranque local (README raíz).
+    [ ] Notas de despliegue básico (entorno PROD) y variables de entorno.
+
+MÉTRICAS DE CALIDAD (MÍNIMAS EN 3 DÍAS)
+    [ ] Autenticación y permisos probados.
+    [ ] Paginación y filtros en listados.
+    [ ] Validaciones esenciales en serializers.
+    [ ] Logs de errores y manejo de excepciones homogéneo.
+
+RIESGOS Y MITIGACIONES
+    [ ] Datos legacy (managed=False): validar compatibilidad de campos y llaves.
+    [ ] Multi-tenant por subdominio: definir fallback `X-Tenant-ID` durante DEV.
+    [ ] Tiempo: priorizar vertical mínima funcional por sala y dejar extras como alcance posterior.
 
 ✅ BUENAS PRÁCTICAS OBLIGATORIAS
 
@@ -530,9 +507,9 @@ Módulos Implementados:
     Contracts - Contratos y términos
     Inventory - 7 categorías de materiales
     Production - Órdenes de producción
-    materials - Productos terminados y materiales
+    Products - Productos terminados
     Agenda - Programación de citas
-    materials - Reportes y análisis
+    Reports - Reportes y análisis
     Dashboard - Métricas y KPIs
 
 🔌 APIs REST Implementadas una vez que este elaborado
@@ -585,6 +562,13 @@ Módulos Implementados:
     PUT    /api/production/orders/{id}/    # Actualizar orden
     POST   /api/production/register/       # Registrar producción
 
+7.Reportes
+    GET    /api/reports/financial/         # Reportes financieros
+    GET    /api/reports/inventory/         # Reportes de inventario
+    GET    /api/reports/production/        # Reportes de producción
+    GET    /api/reports/export/pdf/        # Exportar PDF
+    GET    /api/reports/export/excel/      # Exportar Excel
+
 8.Contratos 
     GET    /api/contracts/              # Listar contratos
     POST   /api/contracts/              # Crear contrato
@@ -608,14 +592,14 @@ Módulos Implementados:
     GET    /api/dashboard/revenue/      # Métricas de ingresos 
 
 11.Productos
-    GET    /api/materials/                       # Productos terminados
-    POST   /api/materials/                       # Crear producto
-    GET    /api/materials/{id}/                  # Detalle producto
-    PUT    /api/materials/{id}/                  # Actualizar producto
-    DELETE /api/materials/{id}/                  # Eliminar producto
-    GET    /api/materials/status/{status}/       # Productos por estado
-    GET    /api/materials/location/{location}/   # Productos por ubicación
-    POST   /api/materials/sell/{id}/             # Marcar como vendido
+    GET    /api/products/                       # Productos terminados
+    POST   /api/products/                       # Crear producto
+    GET    /api/products/{id}/                  # Detalle producto
+    PUT    /api/products/{id}/                  # Actualizar producto
+    DELETE /api/products/{id}/                  # Eliminar producto
+    GET    /api/products/status/{status}/       # Productos por estado
+    GET    /api/products/location/{location}/   # Productos por ubicación
+    POST   /api/products/sell/{id}/             # Marcar como vendido
 
 12.Configuración
     GET    /api/config/                     # Listar configuraciones

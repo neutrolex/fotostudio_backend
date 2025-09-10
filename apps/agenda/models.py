@@ -15,8 +15,8 @@ class Agenda(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'Agenda'
+        managed = True
+        db_table = 'agenda'
 
     def __str__(self):
         return f"{self.titulo} - {self.fecha_inicio}"

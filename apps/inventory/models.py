@@ -23,8 +23,8 @@ class Inventario(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'Inventario'
+        managed = True
+        db_table = 'inventario'
 
     def __str__(self):
         return f"{self.item_type} - ID: {self.item_id}"

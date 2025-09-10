@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+.env
+.env.*
+.python-version
+
+# Build y distribución
+build/
+dist/
+*.egg-info/
+*.egg
+pip-wheel-metadata/
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+static/
+logs/
+*.log
+celerybeat-schedule
+
+# Tests y cobertura
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+nosetests.xml
+test-results/
+
+# IDE/Editor
+.idea/
+.vscode/
+.vs/
+*.code-workspace
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Dumps/Backups
+*.sql
+*.sql.gz

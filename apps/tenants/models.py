@@ -9,8 +9,8 @@ class Tenant(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Tenant'
 
-    def str(self):
+    def __str__(self):
         return self.name

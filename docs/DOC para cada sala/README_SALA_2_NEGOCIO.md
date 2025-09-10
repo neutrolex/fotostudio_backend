@@ -49,57 +49,26 @@
 - Gráficos interactivos
 - Alertas visuales
 
-## ✅ **CHECKLIST DE ENTREGABLES**
+## ✅ Plan de 3 días (Sala 2 - Gestión de Negocio)
 
-### **Día 1 - Configuración y Modelos**
-- [ ] Configurar estructura de carpetas
-- [ ] Crear modelos Order, Client, School, Contract, Appointment
-- [ ] Definir relaciones entre modelos
-- [ ] Configurar migraciones iniciales
-- [ ] Tests básicos de modelos
+Estado actual:
+- [hecho] Apps `orders`, `clients`, `contracts`, `agenda`, `dashboard` creadas y migradas.
+- [pendiente] Serializers, views, filtros y servicios.
 
-### **Día 2 - Serializers y Validaciones**
-- [ ] OrderSerializer con validaciones de negocio
-- [ ] ClientSerializer y SchoolSerializer
-- [ ] ContractSerializer con validaciones de fechas
-- [ ] AppointmentSerializer
-- [ ] Validaciones de negocio (fechas, montos, estados)
-- [ ] Tests unitarios de serializers
+Día 1 (read-only y estructura):
+- [ ] Serializers simples para `orders`, `clients`, `contracts`, `appointments`.
+- [ ] Endpoints read-only: `GET` list/detail para cada módulo.
+- [ ] Dashboard básico: totales (pedidos, clientes) y KPIs simples.
 
-### **Día 3 - Views y Endpoints**
-- [ ] OrderListCreateView con filtros
-- [ ] OrderDetailView con estados
-- [ ] ClientListCreateView con búsqueda
-- [ ] ContractListCreateView con fechas
-- [ ] AppointmentListCreateView con calendario
-- [ ] DashboardView con métricas
-- [ ] Tests de views con APITestCase
+Día 2 (CRUD y validaciones):
+- [ ] CRUD `clients` y `orders` con filtros (estado, fecha) y paginación.
+- [ ] `contracts`: crear/actualizar con validación de vigencia.
+- [ ] `appointments`: crear/listar por fecha; validaciones de solapamiento.
 
-### **Día 4 - Servicios y Lógica de Negocio**
-- [ ] OrderService para cálculos y estados
-- [ ] ClientService para gestión de clientes
-- [ ] ContractService para renovaciones
-- [ ] AppointmentService para programación
-- [ ] DashboardService para métricas
-- [ ] Tests de servicios
-
-### **Día 5 - Integración y Testing**
-- [ ] Integrar con sistema de autenticación
-- [ ] Configurar URLs principales
-- [ ] Tests de integración completos
-- [ ] Tests con Postman
-- [ ] Coverage mínimo 90%
-
-### **Día 6 - Documentación**
-- [ ] Documentación Swagger/OpenAPI
-- [ ] Ejemplos de uso de APIs
-- [ ] Guías de instalación
-- [ ] README de cada app
-
-### **Día 7 - Presentación**
-- [ ] Demo del sistema de gestión
-- [ ] Presentación de funcionalidades
-- [ ] Entrega de documentación
+Día 3 (servicios y cierre):
+- [ ] Services: `OrderService` (estados/cálculos), `DashboardService` (métricas).
+- [ ] Permisos integrados con JWT (roles de Sala 1) y tests.
+- [ ] Swagger actualizado con ejemplos.
 
 ## 🔧 **ESTRUCTURA DE CARPETAS**
 

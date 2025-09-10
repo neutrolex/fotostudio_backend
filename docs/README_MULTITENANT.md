@@ -199,3 +199,14 @@ Para soporte técnico o consultas sobre la implementación multi-tenant:
 
 **Desarrollado con ❤️ para optimizar la gestión multi-tenant de negocios fotográficos.**
 
+---
+
+## 📌 Alineación con plan acelerado (3 días) y salas
+
+- Sala responsable principal: **Sala 4 (Reportes, Configuración y Tenants)**.
+- Día 1: Resolver tenant por subdominio y fallback `X-Tenant-ID` (solo DEV). Ajustar `ALLOWED_HOSTS` y `.env.example`.
+- Día 2: Añadir configuración mínima (parámetros del sistema) y auditoría básica de eventos. Reportes simples en CSV (finanzas/inventario) por tenant.
+- Día 3: Enforcer multi-tenant en todas las queries (filtros por `tenant`) e integración con JWT (claims con `tenant`). Tests críticos y actualización de Swagger.
+
+Nota: Las Salas 1, 2 y 3 deben consumir el contexto de tenant y aplicar filtros de aislamiento en sus endpoints y servicios.
+

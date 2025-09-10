@@ -15,8 +15,8 @@ class Contrato(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'Contrato'
+        managed = True
+        db_table = 'contrato'
 
     def __str__(self):
         return f"Contrato {self.id} - {self.fecha_inicio}"

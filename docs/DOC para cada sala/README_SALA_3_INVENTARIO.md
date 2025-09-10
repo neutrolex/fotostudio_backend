@@ -36,68 +36,33 @@
 - Trazabilidad desde materia prima hasta producto final
 - Cálculo de eficiencia de producción
 
-### **3. App `materials` - Productos Terminados**
+### **3. App `products` - Productos Terminados**
 - Gestión de productos finales
 - Estados del producto (En Producción, En Almacén, En Tienda, Vendido)
 - Control de ubicación y precios
 - Integración con órdenes de producción
 - Historial de movimientos
 
-## ✅ **CHECKLIST DE ENTREGABLES**
+## ✅ Plan de 3 días (Sala 3 - Inventario y Producción)
 
-### **Día 1 - Configuración y Modelos**
-- [ ] Configurar estructura de carpetas
-- [ ] Crear modelos de inventario (7 tipos)
-- [ ] Crear modelo Production con detalles
-- [ ] Crear modelo Product (productos terminados)
-- [ ] Crear modelo Movement (movimientos de inventario)
-- [ ] Configurar migraciones iniciales
-- [ ] Tests básicos de modelos
+Estado actual:
+- [hecho] Apps `inventory` y `production` creadas con modelos base y migraciones.
+- [pendiente] Serializers, views y lógica de stock/mermas.
 
-### **Día 2 - Serializers y Validaciones**
-- [ ] Serializers para 7 tipos de inventario
-- [ ] ProductionSerializer con validaciones
-- [ ] materialserializer con estados
-- [ ] MovementSerializer con historial
-- [ ] Validaciones de stock y cantidades
-- [ ] Validaciones de mermas
-- [ ] Tests unitarios de serializers
+Día 1 (read-only y estructuras):
+- [ ] Serializers básicos para 2 categorías críticas (varillas, impresión).
+- [ ] Listados `GET` de inventario y `GET` de órdenes de producción.
+- [ ] Modelo/endpoint `movements` (solo listado) para trazabilidad.
 
-### **Día 3 - Views y Endpoints**
-- [ ] Views CRUD para inventario (7 tipos)
-- [ ] ProductionListCreateView con estados
-- [ ] ProductListCreateView con ubicaciones
-- [ ] MovementListCreateView con historial
-- [ ] AlertView para stock bajo
-- [ ] StockView para consultas de stock
-- [ ] Tests de views con APITestCase
+Día 2 (CRUD y stock):
+- [ ] CRUD de las 2 categorías críticas con validaciones de stock.
+- [ ] `movements` crear y actualizar stock; alertas de stock bajo.
+- [ ] `production` crear/cerrar orden, registrar mermas básicas.
 
-### **Día 4 - Servicios y Lógica de Negocio**
-- [ ] InventoryService para gestión de stock
-- [ ] ProductionService para órdenes de producción
-- [ ] materialservice para productos terminados
-- [ ] MovementService para movimientos
-- [ ] AlertService para notificaciones
-- [ ] Tests de servicios
-
-### **Día 5 - Integración y Testing**
-- [ ] Integrar con sistema de autenticación
-- [ ] Integrar con modelos de pedidos
-- [ ] Configurar URLs principales
-- [ ] Tests de integración completos
-- [ ] Tests con Postman
-- [ ] Coverage mínimo 90%
-
-### **Día 6 - Documentación**
-- [ ] Documentación Swagger/OpenAPI
-- [ ] Ejemplos de uso de APIs
-- [ ] Guías de instalación
-- [ ] README de cada app
-
-### **Día 7 - Presentación**
-- [ ] Demo del sistema de inventario
-- [ ] Presentación de funcionalidades
-- [ ] Entrega de documentación
+Día 3 (servicios y métricas):
+- [ ] `InventoryService` (ajuste de stock) y `ProductionService` (eficiencia/mermas).
+- [ ] Endpoints de consultas: `alerts`, `stock` por categoría.
+- [ ] Tests críticos y Swagger con ejemplos.
 
 ## 🔧 **ESTRUCTURA DE CARPETAS**
 
@@ -123,14 +88,14 @@ apps/production/
 ├── services.py           # ProductionService
 └── tests/
 
-apps/materials/
+apps/products/
 ├── __init__.py
 ├── models.py              # Modelo Product
-├── serializers.py         # materialserializer
+├── serializers.py         # ProductSerializer
 ├── views.py              # Views de productos
 ├── urls.py               # URLs de productos
 ├── admin.py              # Admin de productos
-├── services.py           # materialservice
+├── services.py           # ProductService
 └── tests/
 ```
 
@@ -195,15 +160,15 @@ GET    /api/production/waste/          # Reporte de mermas
 
 ### **Productos Terminados**
 ```
-GET    /api/materials/                  # Productos terminados
-POST   /api/materials/                  # Crear producto
-GET    /api/materials/{id}/             # Detalle producto
-PUT    /api/materials/{id}/             # Actualizar producto
-DELETE /api/materials/{id}/             # Eliminar producto
+GET    /api/products/                  # Productos terminados
+POST   /api/products/                  # Crear producto
+GET    /api/products/{id}/             # Detalle producto
+PUT    /api/products/{id}/             # Actualizar producto
+DELETE /api/products/{id}/             # Eliminar producto
 
-GET    /api/materials/status/{status}/  # Productos por estado
-GET    /api/materials/location/{location}/ # Productos por ubicación
-POST   /api/materials/sell/{id}/        # Marcar como vendido
+GET    /api/products/status/{status}/  # Productos por estado
+GET    /api/products/location/{location}/ # Productos por ubicación
+POST   /api/products/sell/{id}/        # Marcar como vendido
 ```
 
 ## 🧪 **TESTS OBLIGATORIOS**

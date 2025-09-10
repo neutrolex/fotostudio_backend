@@ -11,10 +11,10 @@ class OrdenProduccion(models.Model):
     estado = models.CharField(max_length=20, choices=[('pendiente', 'pendiente'), ('en_proceso', 'en_proceso'), ('completada', 'completada'), ('cancelada', 'cancelada')], default='pendiente')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
-        managed = False
-        db_table = 'OrdenProduccion'
+        managed = True
+        db_table = 'orden_produccion'
 
     def __str__(self):
         return f"Orden {self.id} - {self.fecha_creacion}"
@@ -32,8 +32,8 @@ class Varilla(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'Varilla'
+        managed = True
+        db_table = 'varilla'
 
     def __str__(self):
         return self.nombre
@@ -51,8 +51,8 @@ class DetalleOrden(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'DetalleOrden'
+        managed = True
+        db_table = 'detalle_orden'
 
 class Cuadro(models.Model):
     id = models.AutoField(primary_key=True)
@@ -66,8 +66,8 @@ class Cuadro(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'Cuadro'
+        managed = True
+        db_table = 'cuadro'
 
     def __str__(self):
         return f"Cuadro {self.id} - {self.descripcion[:50]}"
@@ -85,8 +85,8 @@ class MovimientoInventario(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        managed = False
-        db_table = 'MovimientoInventario'
+        managed = True
+        db_table = 'movimiento_inventario'
 
     def __str__(self):
         return f"{self.tipo} - {self.cantidad} varillas"

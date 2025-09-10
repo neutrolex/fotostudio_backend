@@ -2,6 +2,10 @@ from django.db import models
 
 # Create your models here.
 
+from django.db import models
+
+# Create your models here.
+
 class Pedido(models.Model):
     id = models.AutoField(primary_key=True)
     tenant_id = models.IntegerField()
@@ -14,8 +18,8 @@ class Pedido(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'Pedido'
+        managed = True
+        db_table = 'pedido'
 
     def __str__(self):
         return f"Pedido {self.id} - {self.fecha_pedido}"
@@ -39,8 +43,8 @@ class DetallePedido(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'DetallePedido'
+        managed = True
+        db_table = 'detalle_pedido'
 
     def __str__(self):
         return f"Detalle {self.id} - {self.item_type}"

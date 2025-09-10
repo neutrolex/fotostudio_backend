@@ -12,9 +12,9 @@ Backend en Django para la gestión integral de un negocio de fotografía y enmar
 - **contracts**: contratos escolares y vigencias.
 - **inventory**: 7 categorías de materiales y movimientos.
 - **production**: órdenes de producción y mermas.
-- **materials**: productos terminados y ubicaciones.
+- **products**: productos terminados y ubicaciones.
 - **agenda**: citas y recordatorios.
-- **materials**: reportes y exportaciones.
+- **reports**: reportes y exportaciones.
 - **dashboard**: métricas y KPIs.
 
 ## 🏗️ Multi-tenant (Conceptual)
@@ -72,28 +72,45 @@ python manage.py migrate
 python manage.py runserver
 ```
 
+## 🗓️ Plan acelerado (3 días) y estado
+
+- Estado actual:
+  - [hecho] Estructura de apps y migraciones iniciales.
+  - [hecho] Endpoints `tenants` (list/detail/current).
+  - [pendiente] Auth JWT y perfiles (Sala 1), CRUDs negocio (Sala 2), inventario/producción (Sala 3), reportes/config (Sala 4).
+
+- Plan 3 días: ver `docs/Plan de desarrollo.md` para el detalle por sala y entregables diarios.
+
+## ⚡ Arranque rápido
+
+1) Instalar dependencias
+```bash
+pip install -r requirements.txt
+```
+
+2) Variables de entorno
+```bash
+copy env.example .env   # Windows
+# o
+cp env.example .env     # Linux/Mac
+```
+
+3) Migraciones
+```bash
+python manage.py migrate
+```
+
+4) Ejecutar servidor
+```bash
+python manage.py runserver 0.0.0.0:8000
+```
+
+5) Probar endpoints de tenants
+```
+GET http://127.0.0.1:8000/api/tenants/
+GET http://127.0.0.1:8000/api/tenants/current/
+```
+
 ## 🌐 Integración con el Frontend
 
-- El frontend vive en `c:\Users\60861\Documents\MiniLabFrontend`. Este backend expone APIs REST en `http://localhost:8000/` para ser consumidas por ese frontend.
-- Configurar CORS en Django para permitir el origen del frontend durante desarrollo.
-
-## 📑 Documentación para el Equipo
-
-- Este README explica: estructura de módulos, conexión MySQL y esquema multi-tenant a nivel conceptual (database-based recomendado en MySQL).
-- No se incluye implementación de lógica; solo lineamientos para que el equipo desarrolle sobre esta base.
-
-## 🧭 Buenas Prácticas (lineamientos)
-
-- Usar `tenant_id` o selección de base de datos antes de cada operación, según estrategia elegida.
-- Asegurar aislamiento de datos por tenant en toda consulta y escritura.
-- Tests de integración con al menos dos tenants de prueba.
-
-## 📞 Soporte interno
-
-- Revisar documentación en `Instrucciones/` para detalles por sala (usuarios, negocio, inventario, reportes).
-- Mantener consistencia con el frontend ya existente.
-
-—
-
-Este documento es una guía de alto nivel para el equipo de backend. Cubre la explicación del proyecto, cómo conectarlo a MySQL y cómo se estructura el multi-tenant en esta base.
-
+- El frontend vive en `c:\Users\60861\Documents\MiniLabFrontend`. Este backend expone APIs REST en `http://localhost:8000/`
