@@ -39,17 +39,3 @@ htmlcov/
 nosetests.xml
 test-results/
 
-# IDE/Editor
-.idea/
-.vscode/
-.vs/
-*.code-workspace
-
-# Sistema
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Dumps/Backups
-*.sql
-*.sql.gz
