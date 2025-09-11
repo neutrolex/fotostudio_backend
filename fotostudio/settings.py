@@ -64,11 +64,14 @@ WSGI_APPLICATION = 'fotostudio.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'av1_db',
+        'NAME': 'av1_multitenant',
         'USER': 'root',
-        'PASSWORD': 'yordy12191219',
-        'HOST': '127.0.0.1',
+        'PASSWORD': '########', # contraseña de la base de datos
+        'HOST': 'localhost',
         'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4'
+        }
     }
 }
 
@@ -93,7 +96,10 @@ AUTH_USER_MODEL = 'users.Users'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
 
 SIMPLE_JWT = {

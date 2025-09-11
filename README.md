@@ -49,6 +49,24 @@ Para estrategia database-based por tenant, cada tenant tendrá su propio `DB_NAM
 
 ## ▶️ Ejecución en Desarrollo (Backend)
 
+Limpia primero todo el proyecto, para evitar errores imbecil:
+
+# 0) Ir al proyecto
+Set-Location "C:\Users\60861\Documents\fotostudio_backend"
+
+# 1) Borrar bytecode y cachés
+  Get-ChildItem -Recurse -Include *.pyc,*.pyo -File | Remove-Item -Force
+  Get-ChildItem -Recurse -Directory -Filter "__pycache__" | Remove-Item -Recurse -Force
+
+# 2) Limpiar migraciones (conservando __init__.py)
+  Get-ChildItem -Recurse -Directory -Filter "migrations" | ForEach-Object {
+  Get-ChildItem $_.FullName -File | Where-Object { $_.Name -ne "__init__.py" } | Remove-Item -Force}
+
+# 3) (OPCIONAL) Borrar base de datos SQLite si la usas
+  if (Test-Path ".\db.sqlite3") { Remove-Item ".\db.sqlite3" -Force }
+
+recien empiezas con esto:
+
 1) Crear y activar entorno virtual
 ```
 python -m venv venv

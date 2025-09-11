@@ -1,3 +1,48 @@
-from django.shortcuts import render
+"""
+Vistas para la app de pedidos.
+"""
 
-# Create your views here.
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from django.db.models import Q
+from .models import Pedido
+from .serializers import PedidoSerializer
+
+
+class OrderListView(generics.ListCreateAPIView):
+    """Lista y creación de pedidos."""
+    queryset = Pedido.objects.all()
+    serializer_class = PedidoSerializer
+
+
+class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """Detalle, actualización y eliminación de pedidos."""
+    queryset = Pedido.objects.all()
+    serializer_class = PedidoSerializer
+
+
+class OrderSearchView(APIView):
+    """Búsqueda de pedidos."""
+    
+    def get(self, request):
+        query = request.query_params.get('q', '')
+        if query:
+            orders = Pedido.objects.filter(
+                Q(id__icontains=query) | 
+                Q(cliente_id__icontains=query) |
+                Q(estado__icontains=query)
+            )[:20]
+            serializer = PedidoSerializer(orders, many=True)
+            return Response(serializer.data)
+        return Response([])
+
+
+class OrderStatusView(APIView):
+    """Pedidos por estado."""
+    
+    def get(self, request, status):
+        orders = Pedido.objects.filter(estado=status)
+        serializer = PedidoSerializer(orders, many=True)
+        return Response(serializer.data)

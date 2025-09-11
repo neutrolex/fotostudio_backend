@@ -37,7 +37,7 @@ import string
 from datetime import datetime, timedelta
 
 # Imports locales
-from .serializer import (
+from .serializers import (
     RegisterSerializer, LoginSerializer, UserSerializer, UserUpdateSerializer,
     PasswordChangeSerializer, PasswordResetSerializer, PasswordResetConfirmSerializer,
     VerificationCodeSerializer, EmailChangeSerializer, EmailChangeConfirmSerializer, UserSearchSerializer,
