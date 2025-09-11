@@ -1,14 +1,19 @@
 from django.db import models
-
-# Create your models here.
+from django.core.exceptions import ValidationError
 
 class OrdenProduccion(models.Model):
+    """Modelo para órdenes de producción."""
     id = models.AutoField(primary_key=True)
     tenant_id = models.IntegerField()
     fecha_creacion = models.DateField()
     solicitado_por = models.CharField(max_length=100, blank=True, null=True)
     responsable_produccion = models.CharField(max_length=100, blank=True, null=True)
-    estado = models.CharField(max_length=20, choices=[('pendiente', 'pendiente'), ('en_proceso', 'en_proceso'), ('completada', 'completada'), ('cancelada', 'cancelada')], default='pendiente')
+    estado = models.CharField(max_length=20, choices=[
+        ('pendiente', 'Pendiente'),
+        ('en_proceso', 'En Proceso'),
+        ('completada', 'Completada'),
+        ('cancelada', 'Cancelada')
+    ], default='pendiente')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -18,27 +23,14 @@ class OrdenProduccion(models.Model):
 
     def __str__(self):
         return f"Orden {self.id} - {self.fecha_creacion}"
+    
+    @property
+    def numero_orden(self):
+        return f"ORD-{self.id:04d}"
 
-class Varilla(models.Model):
-    id = models.AutoField(primary_key=True)
-    tenant_id = models.IntegerField()
-    nombre = models.CharField(max_length=100)
-    longitud = models.DecimalField(max_digits=10, decimal_places=2)
-    tipo = models.CharField(max_length=50, blank=True, null=True)
-    precio = models.DecimalField(max_digits=10, decimal_places=2)
-    stock = models.IntegerField(default=0)
-    minimo = models.IntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        managed = True
-        db_table = 'varilla'
-
-    def __str__(self):
-        return self.nombre
 
 class DetalleOrden(models.Model):
+    """Modelo para detalles de órdenes de producción."""
     id = models.AutoField(primary_key=True)
     orden_id = models.IntegerField()
     varilla_id = models.IntegerField()
@@ -54,11 +46,35 @@ class DetalleOrden(models.Model):
         managed = True
         db_table = 'detalle_orden'
 
+    def __str__(self):
+        return f"Detalle Orden {self.orden_id} - Varilla {self.varilla_id}"
+    
+    @property
+    def cantidad_planificada(self):
+        return self.cant_varilla_plan
+    
+    @property
+    def cantidad_usada(self):
+        return self.cant_varilla_usada
+    
+    @property
+    def cantidad_merma(self):
+        return self.merma
+
+
 class Cuadro(models.Model):
+    """Modelo para cuadros producidos."""
     id = models.AutoField(primary_key=True)
     orden_id = models.IntegerField()
     descripcion = models.TextField(blank=True, null=True)
-    estado = models.CharField(max_length=20, choices=[('en_produccion', 'en_produccion'), ('terminado', 'terminado'), ('en_almacen', 'en_almacen'), ('entregado', 'entregado')], default='en_produccion')
+    estado = models.CharField(max_length=20, choices=[
+        ('en_produccion', 'En Producción'),
+        ('terminado', 'Terminado'),
+        ('en_almacen', 'En Almacén'),
+        ('en_tienda', 'En Tienda'),
+        ('entregado', 'Entregado'),
+        ('vendido', 'Vendido')
+    ], default='en_produccion')
     ubicacion = models.CharField(max_length=100, blank=True, null=True)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     fecha_creacion = models.DateField()
@@ -70,23 +86,50 @@ class Cuadro(models.Model):
         db_table = 'cuadro'
 
     def __str__(self):
-        return f"Cuadro {self.id} - {self.descripcion[:50]}"
+        return f"Cuadro {self.id} - {self.descripcion[:50] if self.descripcion else 'Sin descripción'}"
+    
+    @property
+    def nombre(self):
+        return f"Cuadro {self.id}"
+    
+    @property
+    def precio_venta(self):
+        return self.precio
+
 
 class MovimientoInventario(models.Model):
+    """Modelo para movimientos de inventario en producción."""
     id = models.AutoField(primary_key=True)
     tenant_id = models.IntegerField()
-    varilla_id = models.IntegerField()
-    tipo = models.CharField(max_length=20, choices=[('entrada', 'entrada'), ('salida', 'salida'), ('ajuste', 'ajuste'), ('transferencia', 'transferencia')])
+    material_type = models.CharField(max_length=25, choices=[
+        ('varilla', 'varilla'),
+        ('pintura_acabado', 'pintura_acabado'),
+        ('material_impresion', 'material_impresion'),
+        ('material_recordatorio', 'material_recordatorio'),
+        ('software_equipo', 'software_equipo'),
+        ('material_pintura', 'material_pintura'),
+        ('material_diseno', 'material_diseno'),
+        ('producto_terminado', 'producto_terminado')
+    ])
+    material_id = models.IntegerField()
+    tipo_movimiento = models.CharField(max_length=20, choices=[
+        ('entrada', 'Entrada'),
+        ('salida', 'Salida'),
+        ('ajuste', 'Ajuste'),
+        ('transferencia', 'Transferencia'),
+        ('merma', 'Merma'),
+        ('uso_produccion', 'Uso en Producción')
+    ])
     cantidad = models.IntegerField()
     motivo = models.CharField(max_length=255, blank=True, null=True)
-    orden_id = models.IntegerField(blank=True, null=True)
+    orden_produccion_id = models.IntegerField(blank=True, null=True)
     usuario = models.CharField(max_length=100, blank=True, null=True)
-    fecha = models.DateTimeField()
+    fecha = models.DateTimeField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         managed = True
-        db_table = 'movimiento_inventario'
+        db_table = 'production_movimiento_inventario'
 
     def __str__(self):
-        return f"{self.tipo} - {self.cantidad} varillas"
+        return f"{self.tipo_movimiento} - {self.cantidad} {self.material_type}"

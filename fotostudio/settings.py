@@ -64,9 +64,9 @@ WSGI_APPLICATION = 'fotostudio.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'av1_multitenant',  # Cambiar por el nombre de la base de datos
+        'NAME': 'AV1',  # Cambiar por el nombre de la base de datos
         'USER': 'root',   # Cambiar por el usuario de la base de datos
-        'PASSWORD': '######',   # Cambiar por la contraseña de la base de datos
+        'PASSWORD': '123456',   # Cambiar por la contraseña de la base de datos
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
