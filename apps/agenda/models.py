@@ -5,7 +5,7 @@ from django.db import models
 class Agenda(models.Model):
     id = models.AutoField(primary_key=True)
     tenant_id = models.IntegerField()
-    user_id = models.IntegerField()
+    user = models.ForeignKey('users.Users', on_delete=models.CASCADE, db_column='user_id', default=1)
     titulo = models.CharField(max_length=150)
     descripcion = models.TextField(blank=True, null=True)
     fecha_inicio = models.DateTimeField()

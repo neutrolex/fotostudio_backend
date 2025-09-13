@@ -20,4 +20,8 @@ urlpatterns = [
     path('api/inventory/', include('apps.inventory.urls')),
     path('api/materials/', include('apps.materials.urls')),
     path('api/production/', include('apps.production.urls')),
+
+    # Módulo 4 - Reportes y Métricas
+    path('api/reports/', include('apps.reports.urls')),
+    path('api/metrics/', include('apps.metrics.urls')),
 ]

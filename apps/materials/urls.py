@@ -8,6 +8,6 @@ from . import views
 app_name = 'materials'
 
 urlpatterns = [
-    path('', views.MaterialListView.as_view(), name='material-list'),
-    path('<int:pk>/', views.MaterialDetailView.as_view(), name='material-detail'),
+    path('varilla/', views.MaterialVarillaListView.as_view(), name='material-varilla-list'),
+    path('varilla/<int:pk>/', views.MaterialVarillaDetailView.as_view(), name='material-varilla-detail'),
 ]

@@ -71,6 +71,15 @@ class OrdenProduccionSerializer(serializers.ModelSerializer):
             'responsable_produccion': {'required': False, 'allow_blank': True},
             'estado': {'required': False, 'allow_blank': True}
         }
+    
+    def create(self, validated_data):
+        """Crear orden de producción con fecha por defecto."""
+        from datetime import date
+        if 'fecha_creacion' not in validated_data or not validated_data['fecha_creacion']:
+            validated_data['fecha_creacion'] = date.today()
+        if 'tenant_id' not in validated_data:
+            validated_data['tenant_id'] = 1
+        return super().create(validated_data)
 
 
 class MovimientoInventarioSerializer(serializers.ModelSerializer):

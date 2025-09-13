@@ -285,6 +285,12 @@ class MovimientoInventarioSerializer(serializers.ModelSerializer):
         if value <= 0:
             raise serializers.ValidationError("La cantidad debe ser positiva")
         return value
+    
+    def create(self, validated_data):
+        """Crear movimiento con fecha automática."""
+        from datetime import datetime
+        validated_data['fecha'] = datetime.now()
+        return super().create(validated_data)
 
 
 class StockAlertSerializer(serializers.Serializer):

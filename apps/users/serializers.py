@@ -46,12 +46,6 @@ class RegisterSerializer(serializers.ModelSerializer):
     
     Maneja la validación y creación de nuevos usuarios en el sistema,
     incluyendo validaciones de unicidad y hashing seguro de contraseñas.
-    
-    Validaciones incluidas:
-        - Email único en el sistema
-        - Username único en el sistema
-        - Contraseña mínima de 8 caracteres
-        - Campos requeridos según el modelo
     """
     
     # Campo de contraseña con validación de longitud mínima
@@ -60,19 +54,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         min_length=8,
         help_text="Contraseña del usuario (mínimo 8 caracteres)"
     )
-    
-    # Campo de tenant_id requerido para multi-tenancy
-    tenant_id = serializers.IntegerField(
-        help_text="ID del tenant para multi-tenancy"
-    )
 
     class Meta:
         model = Users
-        fields = (
-            'id', 'tenant_id', 'document_number', 'name', 'paternal_lastname',
-            'maternal_lastname', 'email', 'username', 'password', 'phone'
-        )
+        fields = ('id', 'email', 'username', 'password', 'tenant_id')
         read_only_fields = ('id',)
+        extra_kwargs = {
+            'tenant_id': {'required': False, 'default': 1},
+        }
 
     def validate_email(self, value):
         """
@@ -123,14 +112,19 @@ class RegisterSerializer(serializers.ModelSerializer):
         
         # Hashear la contraseña usando el sistema de Django
         hashed = make_password(raw_password)
-        validated_data['password'] = hashed
         
-        # Establecer valores por defecto
-        validated_data.setdefault('is_active', True)
-        validated_data.setdefault('date_joined', timezone.now())
-        
-        # Crear el usuario
-        user = Users.objects.create(**validated_data)
+        # Crear el usuario con valores por defecto
+        user = Users.objects.create(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=hashed,
+            is_active=True,
+            tenant_id=1,
+            document_number='',
+            name='',
+            paternal_lastname='',
+            maternal_lastname=''
+        )
         return user
 
 
@@ -547,39 +541,15 @@ class LoginWithCodeSerializer(serializers.Serializer):
     
     def validate(self, attrs):
         """
-        Valida las credenciales del usuario para login con código.
+        Valida el formato de los datos.
         
         Args:
             attrs (dict): Atributos del serializer (username, code)
             
         Returns:
-            dict: Atributos con el usuario validado incluido
-            
-        Raises:
-            ValidationError: Si las credenciales son inválidas
+            dict: Atributos validados
         """
-        username = attrs.get('username')
-        code = attrs.get('code')
-        
-        # Buscar usuario por username primero, luego por email
-        try:
-            user = Users.objects.get(username=username)
-        except Users.DoesNotExist:
-            try:
-                user = Users.objects.get(email=username)
-            except Users.DoesNotExist:
-                raise serializers.ValidationError({
-                    'username': 'No existe un usuario con ese nombre de usuario o email'
-                })
-        
-        # Verificar que la cuenta esté activa
-        if not user.is_active:
-            raise serializers.ValidationError({
-                'username': 'Tu cuenta está desactivada. Contacta al administrador.'
-            })
-        
-        # Agregar el usuario validado a los atributos
-        attrs['user'] = user
+        # Solo validar formato, la lógica de negocio se maneja en la vista
         return attrs
 
 
@@ -614,17 +584,6 @@ class RequestLoginCodeSerializer(serializers.Serializer):
         
         value = value.strip()
         
-        # Verificar que el usuario existe
-        try:
-            user = Users.objects.get(username=value)
-        except Users.DoesNotExist:
-            try:
-                user = Users.objects.get(email=value)
-            except Users.DoesNotExist:
-                raise serializers.ValidationError("No existe un usuario con ese nombre de usuario o email")
-        
-        # Verificar que la cuenta esté activa
-        if not user.is_active:
-            raise serializers.ValidationError("Tu cuenta está desactivada. Contacta al administrador.")
+        # Solo validar formato, la existencia se valida en la vista
         
         return value

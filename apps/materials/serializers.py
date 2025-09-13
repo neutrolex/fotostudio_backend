@@ -3,13 +3,14 @@ Serializers para la app de materiales.
 """
 
 from rest_framework import serializers
-from .models import MaterialDiseno
+from .models import MaterialVarilla
 
 
-class MaterialDisenoSerializer(serializers.ModelSerializer):
-    """Serializer para materiales de diseño."""
+class MaterialVarillaSerializer(serializers.ModelSerializer):
+    """Serializer para relaciones material-varilla."""
+    varilla_nombre = serializers.CharField(source='varilla.nombre', read_only=True)
     
     class Meta:
-        model = MaterialDiseno
+        model = MaterialVarilla
         fields = '__all__'
-        read_only_fields = ('id', 'created_at', 'updated_at')
+        read_only_fields = ('id', 'created_at')

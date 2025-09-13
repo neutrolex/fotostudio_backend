@@ -134,11 +134,15 @@ def register_production(request):
     usuario = request.data.get('usuario')
     tenant_id = request.data.get('tenant_id')
     
-    if not all([orden_id, material_type, material_id, cantidad_usada, tenant_id]):
+    if not all([orden_id, material_type, material_id, cantidad_usada]):
         return Response(
-            {'error': 'Faltan parámetros requeridos'},
+            {'error': 'Faltan parámetros requeridos: orden_id, material_type, material_id, cantidad_usada'},
             status=status.HTTP_400_BAD_REQUEST
         )
+    
+    # Establecer tenant_id por defecto si no se proporciona
+    if not tenant_id:
+        tenant_id = 1
     
     try:
         # Obtener la orden

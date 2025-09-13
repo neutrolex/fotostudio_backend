@@ -8,6 +8,8 @@ from .models import Contrato
 
 class ContratoSerializer(serializers.ModelSerializer):
     """Serializer para contratos."""
+    cliente_nombre = serializers.CharField(source='cliente.name', read_only=True)
+    cliente_email = serializers.CharField(source='cliente.email', read_only=True)
     
     class Meta:
         model = Contrato

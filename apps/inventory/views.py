@@ -238,18 +238,14 @@ def stock_alerts(request):
         if item_type == 'varilla':
             queryset = model.objects.filter(stock__lte=F('minimo'))
         else:
-            queryset = model.objects.filter(stock_actual__lte=F('stock_minimo'))
+            queryset = model.objects.filter(stock__lte=F('minimo'))
         
         if tenant_id:
             queryset = queryset.filter(tenant_id=tenant_id)
         
         for item in queryset:
-            if item_type == 'varilla':
-                stock_actual = item.stock
-                stock_minimo = item.minimo
-            else:
-                stock_actual = item.stock_actual
-                stock_minimo = item.stock_minimo
+            stock_actual = item.stock
+            stock_minimo = item.minimo
             
             alerts.append({
                 'item_type': item_type,

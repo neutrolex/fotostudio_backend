@@ -29,6 +29,8 @@ INSTALLED_APPS = [
     'apps.orders',
     'apps.production',
     'apps.tenants',
+    'apps.reports',
+    'apps.metrics',
     'apps.users',
 ]
 
@@ -40,6 +42,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.tenants.middleware.TenantMiddleware',
 ]
 
 ROOT_URLCONF = 'fotostudio.urls'
@@ -64,7 +67,7 @@ WSGI_APPLICATION = 'fotostudio.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'AV1',  # Cambiar por el nombre de la base de datos
+        'NAME': 'AV2',  # Cambiar por el nombre de la base de datos
         'USER': 'root',   # Cambiar por el usuario de la base de datos
         'PASSWORD': '123456',   # Cambiar por la contraseña de la base de datos
         'HOST': 'localhost',

@@ -90,12 +90,19 @@ class RegisterAPIView(CreateAPIView):
         
         # Generar tokens JWT para el usuario recién creado
         refresh = RefreshToken.for_user(user)
+        # Inyectar claim de tenant
+        if hasattr(request, 'tenant_id') and request.tenant_id:
+            refresh["tenant_id"] = request.tenant_id
+            access = refresh.access_token
+            access["tenant_id"] = request.tenant_id
+        else:
+            access = refresh.access_token
         
         # Preparar respuesta con datos del usuario y tokens
         data = {
             "user": UserSerializer(user).data,
             "refresh": str(refresh),
-            "access": str(refresh.access_token),
+            "access": str(access),
         }
         
         return Response(data, status=status.HTTP_201_CREATED)
@@ -142,11 +149,18 @@ class LoginAPIView(APIView):
 
         # Generar tokens JWT para el usuario autenticado
         refresh = RefreshToken.for_user(user)
+        # Inyectar claim de tenant
+        if hasattr(request, 'tenant_id') and request.tenant_id:
+            refresh["tenant_id"] = request.tenant_id
+            access = refresh.access_token
+            access["tenant_id"] = request.tenant_id
+        else:
+            access = refresh.access_token
         # Preparar respuesta con datos del usuario y tokens
         data = {
             "user": UserSerializer(user).data,
             "refresh": str(refresh),
-            "access": str(refresh.access_token),
+            "access": str(access),
         }
         return Response(data, status=status.HTTP_200_OK)
 
@@ -246,25 +260,28 @@ class UserSearchView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
-        serializer = UserSearchSerializer(data=request.query_params)
-        if serializer.is_valid():
-            query = serializer.validated_data['query']
-            search_type = serializer.validated_data['search_type']
-            
-            if search_type == 'username':
-                users = Users.objects.filter(username__icontains=query)
-            elif search_type == 'name':
-                users = Users.objects.filter(
-                    Q(name__icontains=query) | 
-                    Q(paternal_lastname__icontains=query) |
-                    Q(maternal_lastname__icontains=query)
-                )
-            else:  # email
-                users = Users.objects.filter(email__icontains=query)
-            
-            serializer = UserSerializer(users, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # Aceptar tanto 'q' como 'query' para compatibilidad
+        query = request.query_params.get('q') or request.query_params.get('query', '')
+        search_type = request.query_params.get('search_type', 'username')
+        
+        if not query:
+            return Response({'error': 'Parámetro de búsqueda requerido'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if search_type == 'username':
+            users = Users.objects.filter(username__icontains=query)
+        elif search_type == 'name':
+            users = Users.objects.filter(
+                Q(name__icontains=query) | 
+                Q(paternal_lastname__icontains=query) |
+                Q(maternal_lastname__icontains=query)
+            )
+        else:  # email
+            users = Users.objects.filter(email__icontains=query)
+        
+        # Limitar resultados y filtrar por tenant
+        users = users.filter(tenant_id=request.user.tenant_id)[:10]
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
@@ -288,6 +305,18 @@ class ProfileDetailView(APIView):
             'is_active': user.is_active
         }
         return Response(profile_data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        """Crear o actualizar perfil"""
+        user = request.user
+        serializer = UserUpdateSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'message': 'Perfil actualizado correctamente',
+                'user': serializer.data
+            }, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -471,28 +500,36 @@ class PasswordPolicyView(APIView):
 
 # Verification Management Views
 class VerificationCodeView(APIView):
-    """Generar código de verificación"""
-    permission_classes = [permissions.IsAuthenticated]
+    """Verificar código de verificación"""
+    permission_classes = [permissions.AllowAny]
     
     def post(self, request):
-        user = request.user
-        code = ''.join(random.choices(string.digits, k=6))
+        """Verificar código de verificación"""
+        email = request.data.get('email')
+        code = request.data.get('code')
         
-        # Crear o actualizar código de verificación
-        verification_code, created = UsersVerificationCode.objects.get_or_create(
-            user_id=user.id,
-            defaults={
-                'code': code,
-                'expires_at': timezone.now() + timedelta(minutes=10)
-            }
-        )
+        if not email or not code:
+            return Response({'error': 'Email y código requeridos'}, status=status.HTTP_400_BAD_REQUEST)
         
-        if not created:
-            verification_code.code = code
-            verification_code.expires_at = timezone.now() + timedelta(minutes=10)
-            verification_code.save()
-        
-        return Response({'message': 'Código de verificación generado'}, status=status.HTTP_200_OK)
+        try:
+            user = Users.objects.get(email=email)
+            verification_code = UsersVerificationCode.objects.get(
+                user_id=user.id,
+                code=code,
+                expires_at__gt=timezone.now()
+            )
+            
+            # Marcar como verificado
+            verification_code.delete()
+            user.is_active = True
+            user.save()
+            
+            return Response({'message': 'Código verificado correctamente'}, status=status.HTTP_200_OK)
+            
+        except Users.DoesNotExist:
+            return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        except UsersVerificationCode.DoesNotExist:
+            return Response({'error': 'Código inválido o expirado'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class EmailChangeView(APIView):
@@ -535,86 +572,75 @@ class EmailChangeView(APIView):
 
 class EmailChangeConfirmView(APIView):
     """Confirmar cambio de email con código"""
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     
     def post(self, request):
-        serializer = EmailChangeConfirmSerializer(data=request.data)
-        if serializer.is_valid():
-            user = request.user
-            code = serializer.validated_data['code']
+        new_email = request.data.get('new_email')
+        code = request.data.get('code')
+        
+        if not new_email or not code:
+            return Response({'error': 'Email y código requeridos'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = Users.objects.get(email=new_email)
+        except Users.DoesNotExist:
+            return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Buscar código de verificación
+        try:
+            verification_code = UsersVerificationCode.objects.get(user_id=user.id)
+        except UsersVerificationCode.DoesNotExist:
+            return Response({
+                'error': 'Código no solicitado',
+                'message': 'No se ha solicitado un código de verificación para cambio de email'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Verificar si el código ha expirado
+        if verification_code.expires_at <= timezone.now():
+            verification_code.delete()
+            return Response({
+                'error': 'Código expirado',
+                'message': 'El código de verificación ha expirado. Solicita uno nuevo.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Verificar si el código es correcto
+        if verification_code.code != code:
+            # Incrementar intentos fallidos
+            verification_code.failed_attempts += 1
             
-            # Buscar código de verificación
-            try:
-                verification_code = UsersVerificationCode.objects.get(user_id=user.id)
-            except UsersVerificationCode.DoesNotExist:
+            # Bloquear cuenta si hay demasiados intentos fallidos (3 intentos)
+            if verification_code.failed_attempts >= 3:
+                verification_code.locked_until = timezone.now() + timedelta(minutes=15)
+                verification_code.save()
                 return Response({
-                    'error': 'Código no solicitado',
-                    'message': 'No se ha solicitado un código de verificación para cambio de email'
-                }, status=status.HTTP_400_BAD_REQUEST)
-            
-            # Verificar si el código ha expirado
-            if verification_code.expires_at <= timezone.now():
-                verification_code.delete()
+                    'error': 'Cuenta bloqueada',
+                    'message': 'Demasiados intentos fallidos. Tu cuenta ha sido bloqueada por 15 minutos.',
+                    'locked_until': verification_code.locked_until.isoformat()
+                }, status=status.HTTP_429_TOO_MANY_REQUESTS)
+            else:
+                verification_code.save()
+                remaining_attempts = 3 - verification_code.failed_attempts
                 return Response({
-                    'error': 'Código expirado',
-                    'message': 'El código de verificación ha expirado. Solicita uno nuevo.'
+                    'error': 'Código incorrecto',
+                    'message': f'Código incorrecto. Te quedan {remaining_attempts} intentos.',
+                    'remaining_attempts': remaining_attempts
                 }, status=status.HTTP_400_BAD_REQUEST)
-            
-            # Verificar si el código es correcto
-            if verification_code.code != code:
-                # Incrementar intentos fallidos
-                verification_code.failed_attempts += 1
-                
-                # Bloquear cuenta si hay demasiados intentos fallidos (3 intentos)
-                if verification_code.failed_attempts >= 3:
-                    verification_code.locked_until = timezone.now() + timedelta(minutes=15)
-                    verification_code.save()
-                    return Response({
-                        'error': 'Cuenta bloqueada',
-                        'message': 'Demasiados intentos fallidos. Tu cuenta ha sido bloqueada por 15 minutos.',
-                        'locked_until': verification_code.locked_until.isoformat()
-                    }, status=status.HTTP_429_TOO_MANY_REQUESTS)
-                else:
-                    verification_code.save()
-                    remaining_attempts = 3 - verification_code.failed_attempts
-                    return Response({
-                        'error': 'Código incorrecto',
-                        'message': f'Código incorrecto. Te quedan {remaining_attempts} intentos.',
-                        'remaining_attempts': remaining_attempts
-                    }, status=status.HTTP_400_BAD_REQUEST)
-            
-            # Código correcto - obtener email temporal y actualizar
-            new_email = verification_code.temp_email
-            if not new_email:
-                return Response({
-                    'error': 'Email temporal no encontrado',
-                    'message': 'No se encontró el email temporal. Solicita un nuevo cambio de email.'
-                }, status=status.HTTP_400_BAD_REQUEST)
-            
-            # Verificar que el email temporal no esté siendo usado por otro usuario
-            if Users.objects.filter(email=new_email).exclude(id=user.id).exists():
-                verification_code.delete()
-                return Response({
-                    'error': 'Email ya registrado',
-                    'message': 'El email ya está siendo usado por otro usuario.'
-                }, status=status.HTTP_400_BAD_REQUEST)
-            
-            # Actualizar email
-            old_email = user.email
-            user.email = new_email
+        
+        # Código correcto - actualizar email
+        if verification_code.temp_email:
+            user.email = verification_code.temp_email
             user.save()
-            
-            # Eliminar código usado
             verification_code.delete()
             
             return Response({
                 'message': 'Email actualizado correctamente',
-                'old_email': old_email,
-                'new_email': new_email,
-                'user': UserSerializer(user).data
+                'new_email': user.email
             }, status=status.HTTP_200_OK)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({
+                'error': 'Email temporal no encontrado',
+                'message': 'No se encontró el email temporal. Solicita un nuevo cambio de email.'
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class VerificationCodeResendView(APIView):
@@ -906,6 +932,13 @@ class LoginWithCodeView(APIView):
             
             # Generar tokens JWT
             refresh = RefreshToken.for_user(user)
+            # Inyectar claim de tenant
+            if hasattr(request, 'tenant_id') and request.tenant_id:
+                refresh["tenant_id"] = request.tenant_id
+                access = refresh.access_token
+                access["tenant_id"] = request.tenant_id
+            else:
+                access = refresh.access_token
             
             # Actualizar último login
             user.last_login = timezone.now()
@@ -914,7 +947,7 @@ class LoginWithCodeView(APIView):
             data = {
                 "user": UserSerializer(user).data,
                 "refresh": str(refresh),
-                "access": str(refresh.access_token),
+                "access": str(access),
                 "login_method": "code",
                 "message": "Login exitoso"
             }

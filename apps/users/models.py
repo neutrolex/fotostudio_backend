@@ -272,6 +272,7 @@ class Users(AbstractUser):
     
     # Campo para multi-tenancy
     tenant_id = models.IntegerField(
+        default=1,
         help_text="ID del tenant para soporte multi-tenancy"
     )
     
@@ -282,18 +283,26 @@ class Users(AbstractUser):
     document_number = models.CharField(
         unique=True, 
         max_length=255,
+        blank=True,
+        null=True,
         help_text="Número de documento de identidad único"
     )
     name = models.CharField(
         max_length=255,
+        blank=True,
+        null=True,
         help_text="Nombre del usuario"
     )
     paternal_lastname = models.CharField(
         max_length=255,
+        blank=True,
+        null=True,
         help_text="Apellido paterno del usuario"
     )
     maternal_lastname = models.CharField(
         max_length=255,
+        blank=True,
+        null=True,
         help_text="Apellido materno del usuario"
     )
     
@@ -356,10 +365,13 @@ class Users(AbstractUser):
     )
     
     # Campos de referencia
-    document_type_id = models.IntegerField(
-        blank=True, 
+    document_type = models.ForeignKey(
+        'DocumentTypes',
+        on_delete=models.SET_NULL,
         null=True,
-        help_text="ID del tipo de documento del usuario"
+        blank=True,
+        db_column='document_type_id',
+        help_text="Tipo de documento del usuario"
     )
     country_id = models.IntegerField(
         blank=True, 
@@ -482,10 +494,13 @@ class UsersVerificationCode(models.Model):
     id = models.AutoField(primary_key=True)
     
     # Relación con usuario
-    user_id = models.BigIntegerField(
-        blank=True, 
+    user = models.ForeignKey(
+        'Users',
+        on_delete=models.CASCADE,
         null=True,
-        help_text="ID del usuario propietario del código de verificación"
+        blank=True,
+        db_column='user_id',
+        help_text="Usuario propietario del código de verificación"
     )
     
     # Código de verificación

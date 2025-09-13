@@ -1,28 +1,24 @@
 from django.contrib import admin
-from .models import MaterialDiseno
+from .models import MaterialVarilla
 
 
-@admin.register(MaterialDiseno)
-class MaterialDisenoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'nombre', 'tipo', 'precio', 'stock', 'minimo', 'created_at')
-    list_filter = ('tipo', 'created_at')
-    search_fields = ('nombre', 'tipo', 'especificaciones')
-    readonly_fields = ('id', 'created_at', 'updated_at')
+@admin.register(MaterialVarilla)
+class MaterialVarillaAdmin(admin.ModelAdmin):
+    list_display = ('id', 'varilla', 'material_type', 'material_id', 'cantidad', 'created_at')
+    list_filter = ('material_type', 'created_at')
+    search_fields = ('varilla__nombre', 'material_type', 'material_id')
+    readonly_fields = ('id', 'created_at')
     ordering = ('-created_at',)
     
     fieldsets = (
         ('Información Básica', {
-            'fields': ('id', 'tenant_id', 'nombre', 'tipo')
+            'fields': ('id', 'varilla', 'material_type', 'material_id')
         }),
-        ('Precios y Stock', {
-            'fields': ('precio', 'stock', 'minimo')
-        }),
-        ('Especificaciones', {
-            'fields': ('especificaciones',),
-            'classes': ('collapse',)
+        ('Cantidad', {
+            'fields': ('cantidad',)
         }),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at'),
+            'fields': ('created_at',),
             'classes': ('collapse',)
         }),
     )

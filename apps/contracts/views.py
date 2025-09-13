@@ -33,6 +33,6 @@ class ContractExpiringView(APIView):
         contracts = Contrato.objects.filter(
             fecha_fin__lte=fecha_limite,
             fecha_fin__gte=timezone.now().date()
-        )
+        ).select_related('cliente')
         serializer = ContratoSerializer(contracts, many=True)
         return Response(serializer.data)

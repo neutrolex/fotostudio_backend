@@ -310,7 +310,7 @@ class ProductoTerminado(models.Model):
     precio_venta = models.DecimalField(max_digits=10, decimal_places=2)
     ubicacion = models.CharField(max_length=100, blank=True, null=True)
     fecha_creacion = models.DateField()
-    orden_produccion_id = models.IntegerField(blank=True, null=True)
+    orden_produccion = models.ForeignKey('production.OrdenProduccion', on_delete=models.SET_NULL, null=True, blank=True, db_column='orden_produccion_id')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -326,7 +326,7 @@ class MovimientoInventario(models.Model):
     """Modelo para movimientos de inventario."""
     id = models.AutoField(primary_key=True)
     tenant_id = models.IntegerField()
-    varilla_id = models.IntegerField()
+    varilla = models.ForeignKey('inventory.Varilla', on_delete=models.CASCADE, db_column='varilla_id', default=1)
     tipo = models.CharField(max_length=20, choices=[
         ('entrada', 'Entrada'),
         ('salida', 'Salida'),
@@ -336,7 +336,7 @@ class MovimientoInventario(models.Model):
     ])
     cantidad = models.IntegerField()
     motivo = models.CharField(max_length=255, blank=True, null=True)
-    orden_id = models.IntegerField(blank=True, null=True)
+    orden = models.ForeignKey('production.OrdenProduccion', on_delete=models.SET_NULL, null=True, blank=True, db_column='orden_id', related_name='inventory_movimientos')
     usuario = models.CharField(max_length=100, blank=True, null=True)
     fecha = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)

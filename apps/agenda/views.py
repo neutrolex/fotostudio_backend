@@ -28,7 +28,7 @@ class AppointmentCalendarView(APIView):
     def get(self, request):
         fecha = request.query_params.get('fecha')
         if fecha:
-            appointments = Agenda.objects.filter(fecha_inicio__date=fecha)
+            appointments = Agenda.objects.filter(fecha_inicio__date=fecha).select_related('user')
         else:
             # Si no se especifica fecha, mostrar las próximas 7 días
             from datetime import timedelta
@@ -37,7 +37,7 @@ class AppointmentCalendarView(APIView):
             appointments = Agenda.objects.filter(
                 fecha_inicio__date__lte=fecha_limite,
                 fecha_inicio__date__gte=timezone.now().date()
-            )
+            ).select_related('user')
         
         serializer = AgendaSerializer(appointments, many=True)
         return Response(serializer.data)

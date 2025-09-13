@@ -29,11 +29,20 @@ class OrderSearchView(APIView):
     def get(self, request):
         query = request.query_params.get('q', '')
         if query:
-            orders = Pedido.objects.filter(
-                Q(id__icontains=query) | 
-                Q(cliente_id__icontains=query) |
-                Q(estado__icontains=query)
-            )[:20]
+            # Intentar buscar por ID si es numérico
+            try:
+                query_id = int(query)
+                orders = Pedido.objects.filter(
+                    Q(id=query_id) | 
+                    Q(cliente__name__icontains=query) |
+                    Q(estado__icontains=query)
+                )[:20]
+            except ValueError:
+                # Si no es numérico, buscar solo por texto
+                orders = Pedido.objects.filter(
+                    Q(cliente__name__icontains=query) |
+                    Q(estado__icontains=query)
+                )[:20]
             serializer = PedidoSerializer(orders, many=True)
             return Response(serializer.data)
         return Response([])

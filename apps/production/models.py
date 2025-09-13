@@ -5,7 +5,7 @@ class OrdenProduccion(models.Model):
     """Modelo para órdenes de producción."""
     id = models.AutoField(primary_key=True)
     tenant_id = models.IntegerField()
-    fecha_creacion = models.DateField()
+    fecha_creacion = models.DateField(default=None, null=True, blank=True)
     solicitado_por = models.CharField(max_length=100, blank=True, null=True)
     responsable_produccion = models.CharField(max_length=100, blank=True, null=True)
     estado = models.CharField(max_length=20, choices=[
@@ -32,8 +32,8 @@ class OrdenProduccion(models.Model):
 class DetalleOrden(models.Model):
     """Modelo para detalles de órdenes de producción."""
     id = models.AutoField(primary_key=True)
-    orden_id = models.IntegerField()
-    varilla_id = models.IntegerField()
+    orden = models.ForeignKey('production.OrdenProduccion', on_delete=models.CASCADE, db_column='orden_id', null=True)
+    varilla = models.ForeignKey('inventory.Varilla', on_delete=models.CASCADE, db_column='varilla_id', default=1)
     cant_varilla_plan = models.IntegerField(default=0)
     cant_cuadros_plan = models.IntegerField(default=0)
     cant_varilla_usada = models.IntegerField(default=0)
@@ -65,7 +65,7 @@ class DetalleOrden(models.Model):
 class Cuadro(models.Model):
     """Modelo para cuadros producidos."""
     id = models.AutoField(primary_key=True)
-    orden_id = models.IntegerField()
+    orden = models.ForeignKey('production.OrdenProduccion', on_delete=models.SET_NULL, null=True, db_column='orden_id')
     descripcion = models.TextField(blank=True, null=True)
     estado = models.CharField(max_length=20, choices=[
         ('en_produccion', 'En Producción'),
@@ -122,7 +122,7 @@ class MovimientoInventario(models.Model):
     ])
     cantidad = models.IntegerField()
     motivo = models.CharField(max_length=255, blank=True, null=True)
-    orden_produccion_id = models.IntegerField(blank=True, null=True)
+    orden_produccion = models.ForeignKey('production.OrdenProduccion', on_delete=models.SET_NULL, null=True, db_column='orden_produccion_id', related_name='production_movimientos')
     usuario = models.CharField(max_length=100, blank=True, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)

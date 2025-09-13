@@ -1,0 +1,2414 @@
+{
+  "info": {
+    "_postman_id": "fotostudio-all-endpoints",
+    "name": "Fotostudio Backend - ALL ENDPOINTS Collection",
+    "description": "Colección COMPLETA con TODOS los endpoints del sistema Fotostudio Backend - 2025-09-12 12:52:35",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "fotostudio-all-endpoints"
+  },
+  "item": [
+    {
+      "name": "🔐 Autenticación y Usuarios (25 endpoints)",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"ochoa\", \"password\": \"123456\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login",
+                ""
+              ]
+            },
+            "description": "Login tradicional con username/email y contraseña"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('access_token', response.access);",
+                  "    pm.environment.set('refresh_token', response.refresh);",
+                  "    console.log('Token guardado automáticamente');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"refresh\": \"{{refresh_token}}\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/token/refresh/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "token",
+                "refresh",
+                ""
+              ]
+            },
+            "description": "Refresh de tokens JWT"
+          },
+          "response": []
+        },
+        {
+          "name": "Registro",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"nuevo_usuario\", \"email\": \"nuevo@email.com\", \"password\": \"123456\", \"first_name\": \"Nuevo\", \"last_name\": \"Usuario\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register",
+                ""
+              ]
+            },
+            "description": "Registro de nuevos usuarios"
+          },
+          "response": []
+        },
+        {
+          "name": "Solicitar Código Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"ochoa@email.com\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login/code/request/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login",
+                "code",
+                "request",
+                ""
+              ]
+            },
+            "description": "Solicitar código de verificación para login"
+          },
+          "response": []
+        },
+        {
+          "name": "Login con Código",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"ochoa@email.com\", \"code\": \"123456\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login/code/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login",
+                "code",
+                ""
+              ]
+            },
+            "description": "Login usando código de verificación"
+          },
+          "response": []
+        },
+        {
+          "name": "Mi Perfil",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users/me/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "users",
+                "me",
+                ""
+              ]
+            },
+            "description": "Obtener información del usuario autenticado"
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Mi Perfil",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"first_name\": \"Actualizado\", \"last_name\": \"Usuario\", \"email\": \"actualizado@email.com\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/users/me/update/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "users",
+                "me",
+                "update",
+                ""
+              ]
+            },
+            "description": "Actualizar información del usuario autenticado"
+          },
+          "response": []
+        },
+        {
+          "name": "Subir Foto Perfil",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/users/me/photo/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "users",
+                "me",
+                "photo",
+                ""
+              ]
+            },
+            "description": "Subir/actualizar foto de perfil"
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Usuarios",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users/search/?q=usuario",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "users",
+                "search",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "usuario"
+                }
+              ]
+            },
+            "description": "Buscar usuarios en el sistema"
+          },
+          "response": []
+        },
+        {
+          "name": "Perfil Detallado",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/profiles/me/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "profiles",
+                "me",
+                ""
+              ]
+            },
+            "description": "Obtener perfil detallado del usuario autenticado"
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Perfil",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bio\": \"Descripción del perfil\", \"location\": \"Lima, Perú\", \"website\": \"https://mi-sitio.com\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/profiles/create/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "profiles",
+                "create",
+                ""
+              ]
+            },
+            "description": "Crear perfil"
+          },
+          "response": []
+        },
+        {
+          "name": "Perfil Público",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/profiles/public/ochoa/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "profiles",
+                "public",
+                "ochoa",
+                ""
+              ]
+            },
+            "description": "Obtener perfil público de un usuario específico"
+          },
+          "response": []
+        },
+        {
+          "name": "Configuraciones Perfil",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/profiles/settings/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "profiles",
+                "settings",
+                ""
+              ]
+            },
+            "description": "Configuraciones del perfil"
+          },
+          "response": []
+        },
+        {
+          "name": "Completitud Perfil",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/profiles/completion/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "profiles",
+                "completion",
+                ""
+              ]
+            },
+            "description": "Estado de completitud del perfil"
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Perfiles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/profiles/search/?q=fotografo",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "profiles",
+                "search",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "fotografo"
+                }
+              ]
+            },
+            "description": "Búsqueda de perfiles"
+          },
+          "response": []
+        },
+        {
+          "name": "Cambiar Contraseña",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"old_password\": \"123456\", \"new_password\": \"nueva123456\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/password/change/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "password",
+                "change",
+                ""
+              ]
+            },
+            "description": "Cambiar contraseña del usuario autenticado"
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Contraseña",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"ochoa@email.com\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/password/reset/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "password",
+                "reset",
+                ""
+              ]
+            },
+            "description": "Solicitar reset de contraseña"
+          },
+          "response": []
+        },
+        {
+          "name": "Confirmar Reset Contraseña",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"ochoa@email.com\", \"code\": \"123456\", \"new_password\": \"nueva123456\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/password/reset/confirm/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "password",
+                "reset",
+                "confirm",
+                ""
+              ]
+            },
+            "description": "Confirmar reset de contraseña con código"
+          },
+          "response": []
+        },
+        {
+          "name": "Verificar Fortaleza Contraseña",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"password\": \"mi_contraseña_segura\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/password/strength/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "password",
+                "strength",
+                ""
+              ]
+            },
+            "description": "Verificar fortaleza de contraseña"
+          },
+          "response": []
+        },
+        {
+          "name": "Política Contraseñas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/password/policy/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "password",
+                "policy",
+                ""
+              ]
+            },
+            "description": "Obtener política de contraseñas"
+          },
+          "response": []
+        },
+        {
+          "name": "Verificar Código",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"ochoa@email.com\", \"code\": \"123456\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/verification/code/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "verification",
+                "code",
+                ""
+              ]
+            },
+            "description": "Verificar código de verificación"
+          },
+          "response": []
+        },
+        {
+          "name": "Cambiar Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"new_email\": \"nuevo@email.com\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/verification/email/change/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "verification",
+                "email",
+                "change",
+                ""
+              ]
+            },
+            "description": "Solicitar cambio de email"
+          },
+          "response": []
+        },
+        {
+          "name": "Confirmar Cambio Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"new_email\": \"nuevo@email.com\", \"code\": \"123456\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/verification/email/change/confirm/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "verification",
+                "email",
+                "change",
+                "confirm",
+                ""
+              ]
+            },
+            "description": "Confirmar cambio de email con código"
+          },
+          "response": []
+        },
+        {
+          "name": "Reenviar Código",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"ochoa@email.com\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/verification/code/resend/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "verification",
+                "code",
+                "resend",
+                ""
+              ]
+            },
+            "description": "Reenviar código de verificación"
+          },
+          "response": []
+        },
+        {
+          "name": "Estado Verificación",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/verification/status/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "verification",
+                "status",
+                ""
+              ]
+            },
+            "description": "Estado de verificación del usuario"
+          },
+          "response": []
+        },
+        {
+          "name": "Verificación Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"ochoa@email.com\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/verification/email/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "verification",
+                "email",
+                ""
+              ]
+            },
+            "description": "Verificación de email"
+          },
+          "response": []
+        },
+        {
+          "name": "Confirmar Verificación Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"ochoa@email.com\", \"code\": \"123456\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/verification/email/confirm/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "verification",
+                "email",
+                "confirm",
+                ""
+              ]
+            },
+            "description": "Confirmar verificación de email"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints de autenticación, usuarios, perfiles, contraseñas y verificación"
+    },
+    {
+      "name": "🏢 Tenants (3 endpoints)",
+      "item": [
+        {
+          "name": "Listar Tenants",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/tenants/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tenants",
+                ""
+              ]
+            },
+            "description": "Obtener lista de tenants (público)"
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Tenant por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/tenants/1/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tenants",
+                "1",
+                ""
+              ]
+            },
+            "description": "Obtener detalles de un tenant específico"
+          },
+          "response": []
+        },
+        {
+          "name": "Tenant Actual",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/tenants/current/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tenants",
+                "current",
+                ""
+              ]
+            },
+            "description": "Obtener información del tenant actual"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gestión de tenants (multi-tenant)"
+    },
+    {
+      "name": "📋 Pedidos (4 endpoints)",
+      "item": [
+        {
+          "name": "Listar Pedidos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/orders/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                ""
+              ]
+            },
+            "description": "Obtener lista de todos los pedidos"
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Pedido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"cliente\": 1, \"fecha_pedido\": \"2025-09-12\", \"fecha_entrega_estimada\": \"2025-09-15\", \"estado\": \"pendiente\", \"total\": 150.00}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                ""
+              ]
+            },
+            "description": "Crear un nuevo pedido"
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Pedido por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/orders/1/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "1",
+                ""
+              ]
+            },
+            "description": "Obtener detalles de un pedido específico"
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Pedidos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/orders/search/?q=pedido",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "search",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "pedido"
+                }
+              ]
+            },
+            "description": "Buscar pedidos"
+          },
+          "response": []
+        },
+        {
+          "name": "Pedidos por Estado",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/orders/status/pendiente/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "status",
+                "pendiente",
+                ""
+              ]
+            },
+            "description": "Obtener pedidos por estado"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gestión de pedidos"
+    },
+    {
+      "name": "👥 Clientes (4 endpoints)",
+      "item": [
+        {
+          "name": "Listar Clientes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clients/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                ""
+              ]
+            },
+            "description": "Obtener lista de todos los clientes"
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Cliente Nuevo\", \"client_type\": \"individual\", \"contact\": \"Juan Pérez\", \"email\": \"juan@email.com\", \"phone\": \"+51 987 654 321\", \"address\": \"Av. Principal 123, Lima\", \"additional_details\": \"Cliente frecuente\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/clients/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                ""
+              ]
+            },
+            "description": "Crear un nuevo cliente"
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Cliente por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clients/1/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "1",
+                ""
+              ]
+            },
+            "description": "Obtener detalles de un cliente específico"
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Clientes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clients/search/?q=cliente",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "search",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "cliente"
+                }
+              ]
+            },
+            "description": "Buscar clientes"
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Colegios",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clients/schools/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "schools",
+                ""
+              ]
+            },
+            "description": "Listar colegios"
+          },
+          "response": []
+        }
+      ],
+      "description": "CRUD completo de clientes"
+    },
+    {
+      "name": "📄 Contratos (3 endpoints)",
+      "item": [
+        {
+          "name": "Listar Contratos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/contracts/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "contracts",
+                ""
+              ]
+            },
+            "description": "Obtener lista de todos los contratos"
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Contrato",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"cliente\": 1, \"fecha_inicio\": \"2025-09-12\", \"fecha_fin\": \"2025-12-12\", \"estado\": \"vigente\", \"monto_total\": 5000.00, \"descripcion\": \"Contrato de servicios fotográficos\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/contracts/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "contracts",
+                ""
+              ]
+            },
+            "description": "Crear un nuevo contrato"
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Contrato por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/contracts/1/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "contracts",
+                "1",
+                ""
+              ]
+            },
+            "description": "Obtener detalles de un contrato específico"
+          },
+          "response": []
+        },
+        {
+          "name": "Contratos por Vencer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/contracts/expiring/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "contracts",
+                "expiring",
+                ""
+              ]
+            },
+            "description": "Obtener contratos próximos a vencer"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gestión de contratos"
+    },
+    {
+      "name": "📅 Agenda (3 endpoints)",
+      "item": [
+        {
+          "name": "Listar Citas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/agenda/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agenda",
+                ""
+              ]
+            },
+            "description": "Obtener lista de todas las citas"
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Cita",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"titulo\": \"Sesión Fotográfica\", \"descripcion\": \"Sesión de retratos en estudio\", \"fecha_inicio\": \"2025-09-15T10:00:00Z\", \"fecha_fin\": \"2025-09-15T12:00:00Z\", \"estado\": \"confirmada\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/agenda/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agenda",
+                ""
+              ]
+            },
+            "description": "Crear una nueva cita"
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Cita por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/agenda/1/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agenda",
+                "1",
+                ""
+              ]
+            },
+            "description": "Obtener detalles de una cita específica"
+          },
+          "response": []
+        },
+        {
+          "name": "Calendario de Citas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/agenda/calendar/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agenda",
+                "calendar",
+                ""
+              ]
+            },
+            "description": "Obtener vista de calendario de citas"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gestión de agenda y citas"
+    },
+    {
+      "name": "📊 Dashboard (4 endpoints)",
+      "item": [
+        {
+          "name": "Métricas Principales",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/dashboard/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                ""
+              ]
+            },
+            "description": "Obtener métricas principales del dashboard"
+          },
+          "response": []
+        },
+        {
+          "name": "Métricas de Pedidos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/dashboard/orders/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "orders",
+                ""
+              ]
+            },
+            "description": "Obtener métricas de pedidos"
+          },
+          "response": []
+        },
+        {
+          "name": "Métricas de Clientes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/dashboard/clients/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "clients",
+                ""
+              ]
+            },
+            "description": "Obtener métricas de clientes"
+          },
+          "response": []
+        },
+        {
+          "name": "Métricas de Ingresos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/dashboard/revenue/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "revenue",
+                ""
+              ]
+            },
+            "description": "Obtener métricas de ingresos"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints del dashboard principal"
+    },
+    {
+      "name": "📦 Inventario (12 endpoints)",
+      "item": [
+        {
+          "name": "Listar Inventario General",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                ""
+              ]
+            },
+            "description": "Obtener lista de todos los items de inventario"
+          },
+          "response": []
+        },
+        {
+          "name": "Varillas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/varillas/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "varillas",
+                ""
+              ]
+            },
+            "description": "Obtener lista de varillas"
+          },
+          "response": []
+        },
+        {
+          "name": "Pinturas y Acabados",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/pinturas/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "pinturas",
+                ""
+              ]
+            },
+            "description": "Obtener lista de pinturas y acabados"
+          },
+          "response": []
+        },
+        {
+          "name": "Materiales de Impresión",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/impresion/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "impresion",
+                ""
+              ]
+            },
+            "description": "Obtener lista de materiales de impresión"
+          },
+          "response": []
+        },
+        {
+          "name": "Materiales de Recordatorio",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/recordatorio/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "recordatorio",
+                ""
+              ]
+            },
+            "description": "Obtener lista de materiales de recordatorio"
+          },
+          "response": []
+        },
+        {
+          "name": "Software y Equipos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/software/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "software",
+                ""
+              ]
+            },
+            "description": "Obtener lista de software y equipos"
+          },
+          "response": []
+        },
+        {
+          "name": "Materiales de Pintura",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/pintura/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "pintura",
+                ""
+              ]
+            },
+            "description": "Obtener lista de materiales de pintura"
+          },
+          "response": []
+        },
+        {
+          "name": "Materiales de Diseño",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/diseno/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "diseno",
+                ""
+              ]
+            },
+            "description": "Obtener lista de materiales de diseño"
+          },
+          "response": []
+        },
+        {
+          "name": "Productos Terminados",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/productos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "productos",
+                ""
+              ]
+            },
+            "description": "Obtener lista de productos terminados"
+          },
+          "response": []
+        },
+        {
+          "name": "Movimientos de Inventario",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/movements/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "movements",
+                ""
+              ]
+            },
+            "description": "Obtener movimientos de inventario"
+          },
+          "response": []
+        },
+        {
+          "name": "Alertas de Stock",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/alerts/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "alerts",
+                ""
+              ]
+            },
+            "description": "Obtener alertas de stock bajo"
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Movimiento Inventario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"tipo_movimiento\": \"entrada\", \"cantidad\": 10, \"descripcion\": \"Compra de materiales\", \"varilla\": 1}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/inventory/movements/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "movements",
+                ""
+              ]
+            },
+            "description": "Crear un nuevo movimiento de inventario"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gestión completa de inventario"
+    },
+    {
+      "name": "🏭 Producción (6 endpoints)",
+      "item": [
+        {
+          "name": "Listar Órdenes de Producción",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/production/orders/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "production",
+                "orders",
+                ""
+              ]
+            },
+            "description": "Obtener lista de órdenes de producción"
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Orden de Producción",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"solicitado_por\": \"Juan Pérez\", \"responsable_produccion\": \"Carlos Producción\", \"estado\": \"pendiente\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/production/orders/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "production",
+                "orders",
+                ""
+              ]
+            },
+            "description": "Crear una nueva orden de producción"
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Orden por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/production/orders/1/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "production",
+                "orders",
+                "1",
+                ""
+              ]
+            },
+            "description": "Obtener detalles de una orden específica"
+          },
+          "response": []
+        },
+        {
+          "name": "Detalles de Producción",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/production/detalles/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "production",
+                "detalles",
+                ""
+              ]
+            },
+            "description": "Obtener detalles de producción"
+          },
+          "response": []
+        },
+        {
+          "name": "Cuadros",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/production/cuadros/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "production",
+                "cuadros",
+                ""
+              ]
+            },
+            "description": "Obtener lista de cuadros"
+          },
+          "response": []
+        },
+        {
+          "name": "Registrar Producción",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"orden_id\": 1, \"materiales_usados\": [{\"varilla_id\": 1, \"cantidad\": 5}], \"productos_terminados\": [{\"descripcion\": \"Cuadro 20x30\", \"cantidad\": 10}]}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/production/register/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "production",
+                "register",
+                ""
+              ]
+            },
+            "description": "Registrar producción completada"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gestión de producción"
+    },
+    {
+      "name": "🔧 Materiales (2 endpoints)",
+      "item": [
+        {
+          "name": "Listar Materiales Varilla",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/materials/varilla/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "materials",
+                "varilla",
+                ""
+              ]
+            },
+            "description": "Obtener lista de materiales de varilla"
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Material Varilla por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/materials/varilla/1/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "materials",
+                "varilla",
+                "1",
+                ""
+              ]
+            },
+            "description": "Obtener detalles de un material de varilla específico"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gestión de materiales"
+    },
+    {
+      "name": "📊 Reportes (6 endpoints)",
+      "item": [
+        {
+          "name": "Listar Reportes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/reports/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                ""
+              ]
+            },
+            "description": "Obtener lista de reportes"
+          },
+          "response": []
+        },
+        {
+          "name": "Generar Reporte",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Reporte de Ventas\", \"report_type\": \"orders\", \"description\": \"Reporte de ventas del mes\", \"date_from\": \"2025-09-01\", \"date_to\": \"2025-09-12\", \"filters\": \"{}\", \"export_format\": \"pdf\", \"include_charts\": true, \"include_summary\": true}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/reports/generate/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "generate",
+                ""
+              ]
+            },
+            "description": "Generar un nuevo reporte"
+          },
+          "response": []
+        },
+        {
+          "name": "Exportar CSV",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/reports/export/csv/1/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "export",
+                "csv",
+                "1",
+                ""
+              ]
+            },
+            "description": "Exportar reporte a CSV"
+          },
+          "response": []
+        },
+        {
+          "name": "Exportar Excel",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/reports/export/excel/1/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "export",
+                "excel",
+                "1",
+                ""
+              ]
+            },
+            "description": "Exportar reporte a Excel"
+          },
+          "response": []
+        },
+        {
+          "name": "Exportar PDF",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/reports/export/pdf/1/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "export",
+                "pdf",
+                "1",
+                ""
+              ]
+            },
+            "description": "Exportar reporte a PDF"
+          },
+          "response": []
+        },
+        {
+          "name": "Categorías de Reportes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/reports/categories/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "categories",
+                ""
+              ]
+            },
+            "description": "Obtener categorías de reportes disponibles"
+          },
+          "response": []
+        }
+      ],
+      "description": "Sistema de reportes y exportación"
+    },
+    {
+      "name": "📈 Métricas (2 endpoints)",
+      "item": [
+        {
+          "name": "Listar Métricas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/metrics/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "metrics",
+                ""
+              ]
+            },
+            "description": "Obtener lista de métricas"
+          },
+          "response": []
+        },
+        {
+          "name": "KPIs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/metrics/kpis/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "metrics",
+                "kpis",
+                ""
+              ]
+            },
+            "description": "Obtener KPIs definidos"
+          },
+          "response": []
+        }
+      ],
+      "description": "Sistema de métricas y KPIs"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
