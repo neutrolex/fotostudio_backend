@@ -22,19 +22,23 @@ class DetalleOrdenAdmin(admin.ModelAdmin):
 
 @admin.register(OrdenProduccion)
 class OrdenProduccionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'numero_orden', 'fecha_creacion', 'solicitado_por', 'responsable_produccion', 'estado', 'created_at')
+    list_display = ('id', 'get_numero_orden', 'fecha_creacion', 'solicitado_por', 'responsable_produccion', 'estado', 'created_at')
     list_filter = ('estado', 'fecha_creacion', 'created_at')
-    search_fields = ('numero_orden', 'solicitado_por', 'responsable_produccion', 'estado')
-    readonly_fields = ('id', 'created_at', 'updated_at', 'fecha_creacion')
+    search_fields = ('id', 'solicitado_por', 'responsable_produccion', 'estado')
+    readonly_fields = ('id', 'created_at', 'updated_at', 'fecha_creacion', 'get_numero_orden')
     date_hierarchy = 'fecha_creacion'
     ordering = ('-created_at',)
     
     fieldsets = (
         ('Información Básica', {
-            'fields': ('numero_orden', 'tenant_id', 'fecha_creacion', 'fecha_entrega_estimada', 'estado')
+            'fields': ('get_numero_orden', 'tenant_id', 'fecha_creacion', 'fecha_entrega', 'estado')
         }),
         ('Responsables', {
             'fields': ('solicitado_por', 'responsable_produccion')
+        }),
+        ('Detalles Adicionales', {
+            'fields': ('descripcion', 'fecha_inicio', 'prioridad'),
+            'classes': ('collapse',)
         }),
         ('Observaciones', {
             'fields': ('observaciones',),
@@ -45,6 +49,11 @@ class OrdenProduccionAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+    
+    def get_numero_orden(self, obj):
+        """Método para mostrar el número de orden en el admin."""
+        return obj.numero_orden
+    get_numero_orden.short_description = 'Número de Orden'
 
 
 @admin.register(MovimientoInventario)

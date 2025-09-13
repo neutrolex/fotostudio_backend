@@ -7,7 +7,7 @@ class ClientAdmin(admin.ModelAdmin):
     list_display = ('id', 'nombre', 'tipo', 'contacto', 'email', 'ie', 'fecha_registro')
     list_filter = ('tipo', 'fecha_registro')
     search_fields = ('nombre', 'email', 'contacto', 'ie')
-    readonly_fields = ('id', 'fecha_registro', 'total_pedidos', 'monto_total')
+    readonly_fields = ('id', 'fecha_registro', 'total_pedidos', 'monto_total', 'created_at', 'updated_at')
     ordering = ('-fecha_registro',)
     
     fieldsets = (

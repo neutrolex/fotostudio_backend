@@ -6,16 +6,13 @@ from .models import Tenant
 class TenantAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'subdomain', 'status', 'created_at')
     list_filter = ('status', 'created_at')
-    search_fields = ('name', 'subdomain', 'description')
+    search_fields = ('name', 'subdomain')
     readonly_fields = ('id', 'created_at', 'updated_at')
     ordering = ('-created_at',)
     
     fieldsets = (
         ('Información Básica', {
             'fields': ('id', 'name', 'subdomain', 'status')
-        }),
-        ('Configuración', {
-            'fields': ('description', 'settings')
         }),
         ('Auditoría', {
             'fields': ('created_at', 'updated_at'),

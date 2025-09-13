@@ -35,10 +35,14 @@ class OrdenProduccion(models.Model):
         db_table = 'orden_produccion'
 
     def __str__(self):
+        if self.id is None:
+            return "Orden Nueva"
         return f"Orden {self.id} - {self.fecha_creacion}"
     
     @property
     def numero_orden(self):
+        if self.id is None:
+            return "ORD-XXXX"
         return f"ORD-{self.id:04d}"
 
 
