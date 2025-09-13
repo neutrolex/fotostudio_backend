@@ -6,7 +6,8 @@ from django.urls import path
 from .views import (
     ReportListView, ReportDetailView, ReportGenerateView,
     report_categories, ReportExportCSVView,
-    ReportExportExcelView, ReportExportPDFView
+    ReportExportExcelView, ReportExportPDFView,
+    SalesReportView, InventoryReportView, ClientsReportView, ReportExportView
 )
 
 urlpatterns = [
@@ -17,6 +18,12 @@ urlpatterns = [
     path('export/csv/<int:pk>/', ReportExportCSVView.as_view(), name='report-export-csv'),
     path('export/excel/<int:pk>/', ReportExportExcelView.as_view(), name='report-export-excel'),
     path('export/pdf/<int:pk>/', ReportExportPDFView.as_view(), name='report-export-pdf'),
+    
+    # Endpoints compatibles con frontend
+    path('sales/', SalesReportView.as_view(), name='sales-report'),
+    path('inventory/', InventoryReportView.as_view(), name='inventory-report'),
+    path('clients/', ClientsReportView.as_view(), name='clients-report'),
+    path('export/', ReportExportView.as_view(), name='report-export'),
     
     # Categorías y formatos
     path('categories/', report_categories, name='report-categories'),

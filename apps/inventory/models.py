@@ -1,38 +1,129 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
+from apps.tenants.models import Tenant
+
 
 class Inventario(models.Model):
-    """Modelo base para control de stock por categorías."""
-    id = models.AutoField(primary_key=True)
-    tenant_id = models.IntegerField()
-    item_type = models.CharField(max_length=25, choices=[
-        ('varilla', 'varilla'),
-        ('pintura_acabado', 'pintura_acabado'),
-        ('material_impresion', 'material_impresion'),
-        ('material_recordatorio', 'material_recordatorio'),
-        ('software_equipo', 'software_equipo'),
-        ('material_pintura', 'material_pintura'),
-        ('material_diseno', 'material_diseno'),
-        ('producto_terminado', 'producto_terminado')
-    ])
-    item_id = models.IntegerField()
-    stock_actual = models.IntegerField(default=0)
-    stock_minimo = models.IntegerField(default=0)
-    ubicacion = models.CharField(max_length=100, blank=True, null=True)
+    """
+    Modelo principal para control de inventario.
+    
+    Compatible con la estructura esperada por el frontend.
+    """
+    
+    CATEGORIA_CHOICES = [
+        ('Enmarcado', 'Enmarcado'),
+        ('Minilab', 'Minilab'),
+        ('Pintura', 'Pintura'),
+        ('Diseño', 'Diseño'),
+        ('Restauración Digital', 'Restauración Digital'),
+        ('Recordatorios', 'Recordatorios'),
+    ]
+    
+    TIPO_CHOICES = [
+        # Enmarcado
+        ('Molduras', 'Molduras'),
+        ('Pinturas', 'Pinturas'),
+        ('Pinceles', 'Pinceles'),
+        ('Barnices', 'Barnices'),
+        # Minilab
+        ('Papel', 'Papel'),
+        ('Químicos', 'Químicos'),
+        ('Insumos', 'Insumos'),
+        # Pintura
+        ('Óleos', 'Óleos'),
+        ('Acrílicos', 'Acrílicos'),
+        ('Lienzos', 'Lienzos'),
+        # Diseño
+        ('Plantillas', 'Plantillas'),
+        ('Fuentes', 'Fuentes'),
+        ('Gráficos', 'Gráficos'),
+        # Restauración Digital
+        ('Software', 'Software'),
+        ('Hardware', 'Hardware'),
+        # Recordatorios
+        ('Materiales', 'Materiales'),
+        ('Herramientas', 'Herramientas'),
+    ]
+    
+    UNIDAD_CHOICES = [
+        ('unidades', 'Unidades'),
+        ('Hojas', 'Hojas'),
+        ('L', 'Litros'),
+        ('rollos', 'Rollos'),
+        ('kg', 'Kilogramos'),
+    ]
+    
+    # ID personalizado para compatibilidad con frontend
+    id = models.CharField(max_length=10, primary_key=True, verbose_name="ID Inventario")
+    
+    # Información básica
+    nombre = models.CharField(max_length=200, default="", verbose_name="Nombre del Producto")
+    categoria = models.CharField(
+        max_length=50, 
+        choices=CATEGORIA_CHOICES, 
+        default='Enmarcado',
+        verbose_name="Categoría"
+    )
+    tipo = models.CharField(
+        max_length=50, 
+        choices=TIPO_CHOICES, 
+        default='Molduras',
+        verbose_name="Tipo"
+    )
+    
+    # Control de stock
+    stock = models.IntegerField(default=0, verbose_name="Stock Actual")
+    stockMinimo = models.IntegerField(default=0, verbose_name="Stock Mínimo")
+    unidad = models.CharField(
+        max_length=20, 
+        choices=UNIDAD_CHOICES, 
+        default='unidades',
+        verbose_name="Unidad"
+    )
+    
+    # Información comercial
+    precio = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Precio Unitario")
+    proveedor = models.CharField(max_length=200, blank=True, null=True, verbose_name="Proveedor")
+    
+    # Metadatos
+    fechaIngreso = models.DateField(auto_now_add=True, verbose_name="Fecha de Ingreso")
+    ultimaVenta = models.DateField(blank=True, null=True, verbose_name="Última Venta")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
+    # Relaciones
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='inventario')
+    created_by = models.ForeignKey('users.Users', on_delete=models.SET_NULL, null=True, blank=True)
+    
     class Meta:
-        managed = True
+        verbose_name = "Inventario"
+        verbose_name_plural = "Inventarios"
+        ordering = ['-fechaIngreso']
+        unique_together = ['id', 'tenant']
         db_table = 'inventario'
-
+    
     def __str__(self):
-        return f"{self.item_type} - ID: {self.item_id}"
+        return f"{self.nombre} ({self.tipo})"
+    
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # Generar ID automático si no se proporciona
+            last_item = Inventario.objects.filter(tenant=self.tenant).order_by('-id').first()
+            if last_item and last_item.id.startswith('INV'):
+                try:
+                    last_num = int(last_item.id[3:])
+                    self.id = f"INV{str(last_num + 1).zfill(3)}"
+                except ValueError:
+                    self.id = "INV001"
+            else:
+                self.id = "INV001"
+        super().save(*args, **kwargs)
     
     @property
     def is_low_stock(self):
         """Verifica si el stock está por debajo del mínimo."""
-        return self.stock_actual <= self.stock_minimo
+        return self.stock <= self.stockMinimo
 
 
 class Varilla(models.Model):

@@ -24,4 +24,8 @@ urlpatterns = [
     # Módulo 4 - Reportes y Métricas
     path('api/reports/', include('apps.reports.urls')),
     path('api/metrics/', include('apps.metrics.urls')),
+    
+    # Módulo 5 - Configuraciones y Notificaciones
+    path('api/configurations/', include('apps.configurations.urls')),
+    path('api/notifications/', include('apps.notifications.urls')),
 ]

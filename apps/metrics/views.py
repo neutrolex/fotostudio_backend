@@ -36,7 +36,7 @@ class MetricsListView(APIView):
 
 # Importar modelos de otras apps
 from apps.orders.models import Pedido
-from apps.clients.models import Cliente
+from apps.clients.models import Client
 from apps.inventory.models import Varilla, PinturaAcabado, MaterialImpresion
 from apps.production.models import OrdenProduccion
 
@@ -100,7 +100,7 @@ class DashboardMetricsView(APIView):
     def get_client_metrics(self, tenant_id):
         """Obtener métricas de clientes."""
         fecha_limite = timezone.now() - timedelta(days=30)
-        clientes_activos = Cliente.objects.filter(
+        clientes_activos = Client.objects.filter(
             tenant_id=tenant_id,
             id__in=Pedido.objects.filter(
                 created_at__gte=fecha_limite
@@ -109,7 +109,7 @@ class DashboardMetricsView(APIView):
         
         return {
             'clientes_activos': clientes_activos,
-            'total_clientes': Cliente.objects.filter(tenant_id=tenant_id).count()
+            'total_clientes': Client.objects.filter(tenant_id=tenant_id).count()
         }
     
     def get_inventory_metrics(self, tenant_id):
@@ -142,7 +142,7 @@ def available_metrics(request):
     metrics = [
         {'value': 'financial', 'label': 'Métricas Financieras', 'description': 'Ingresos, costos y rentabilidad'},
         {'value': 'operational', 'label': 'Métricas Operacionales', 'description': 'Eficiencia y productividad'},
-        {'value': 'client', 'label': 'Métricas de Cliente', 'description': 'Comportamiento y satisfacción'},
+        {'value': 'client', 'label': 'Métricas de Client', 'description': 'Comportamiento y satisfacción'},
         {'value': 'inventory', 'label': 'Métricas de Inventario', 'description': 'Stock y rotación'},
         {'value': 'production', 'label': 'Métricas de Producción', 'description': 'Eficiencia y mermas'},
     ]
@@ -206,12 +206,12 @@ class ClientsMetricsView(APIView):
 
     def get(self, request):
         tenant_id = request.user.tenant_id
-        by_type = Cliente.objects.filter(tenant_id=tenant_id).values('client_type').annotate(count=Count('id'))
-        activos = Cliente.objects.filter(
+        by_type = Client.objects.filter(tenant_id=tenant_id).values('client_type').annotate(count=Count('id'))
+        activos = Client.objects.filter(
             tenant_id=tenant_id,
             id__in=Pedido.objects.values_list('cliente_id', flat=True).distinct()
         ).count()
-        total = Cliente.objects.filter(tenant_id=tenant_id).count()
+        total = Client.objects.filter(tenant_id=tenant_id).count()
         return Response({'by_type': list(by_type), 'active': activos, 'inactive': total - activos, 'total': total})
 
 

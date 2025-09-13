@@ -21,7 +21,7 @@ from django.urls import path
 # Imports de vistas locales
 from .views import (
     # Vistas de autenticación
-    RegisterAPIView, LoginAPIView,
+    RegisterAPIView, LoginAPIView, LogoutAPIView,
     RequestLoginCodeView, LoginWithCodeView,
     
     # Vistas de gestión de usuarios
@@ -38,7 +38,10 @@ from .views import (
     # Vistas de verificación
     VerificationCodeView, EmailChangeView, EmailChangeConfirmView, 
     VerificationCodeResendView, VerificationStatusView, 
-    EmailVerificationView, EmailVerificationConfirmView
+    EmailVerificationView, EmailVerificationConfirmView,
+    
+    # Vistas compatibles con frontend
+    UpdateProfileView, ChangePasswordView, UploadAvatarView, UserProfileView
 )
 
 # Import de vista JWT para refresh de tokens
@@ -58,6 +61,9 @@ urlpatterns = [
     # Login tradicional con username/email y contraseña
     path('login/', LoginAPIView.as_view(), name='auth-login'),
     
+    # Logout de usuarios autenticados
+    path('logout/', LogoutAPIView.as_view(), name='auth-logout'),
+    
     # Solicitar código de verificación para login
     path('login/code/request/', RequestLoginCodeView.as_view(), name='login-code-request'),
     
@@ -66,6 +72,7 @@ urlpatterns = [
     
     # Refresh de tokens JWT
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('refresh/', TokenRefreshView.as_view(), name='auth-refresh'),  # Alias para compatibilidad
     
     # ========================================================================
     # ENDPOINTS DE GESTIÓN DE USUARIOS
@@ -84,6 +91,7 @@ urlpatterns = [
     
     # Alias para obtener perfil del usuario (compatibilidad)
     path('users/profile/', UserDetailView.as_view(), name='user-profile'),
+    path('profile/', UserDetailView.as_view(), name='auth-profile'),  # Alias para compatibilidad
     
     # ========================================================================
     # ENDPOINTS DE GESTIÓN DE PERFILES
@@ -147,4 +155,19 @@ urlpatterns = [
     
     # Confirmar verificación de email
     path('verification/email/confirm/', EmailVerificationConfirmView.as_view(), name='email-verification-confirm'),
+    
+    # ========================================================================
+    # ENDPOINTS COMPATIBLES CON FRONTEND
+    # ========================================================================
+    # Perfil completo del usuario
+    path('profile/', UserProfileView.as_view(), name='user-profile-frontend'),
+    
+    # Actualizar perfil
+    path('profile/update/', UpdateProfileView.as_view(), name='update-profile-frontend'),
+    
+    # Cambiar contraseña
+    path('profile/change-password/', ChangePasswordView.as_view(), name='change-password-frontend'),
+    
+    # Subir avatar
+    path('profile/upload-avatar/', UploadAvatarView.as_view(), name='upload-avatar-frontend'),
 ]

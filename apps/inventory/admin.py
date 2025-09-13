@@ -8,11 +8,30 @@ from .models import (
 
 @admin.register(Inventario)
 class InventarioAdmin(admin.ModelAdmin):
-    list_display = ('id', 'item_type', 'item_id', 'stock_actual', 'stock_minimo', 'ubicacion', 'created_at')
-    list_filter = ('item_type', 'created_at')
-    search_fields = ('item_type', 'item_id', 'ubicacion')
-    readonly_fields = ('id', 'created_at', 'updated_at')
-    ordering = ('-created_at',)
+    list_display = ('id', 'nombre', 'categoria', 'tipo', 'stock', 'stockMinimo', 'unidad', 'precio')
+    list_filter = ('categoria', 'tipo', 'fechaIngreso')
+    search_fields = ('nombre', 'categoria', 'tipo', 'proveedor')
+    readonly_fields = ('id', 'fechaIngreso', 'created_at', 'updated_at')
+    ordering = ('-fechaIngreso',)
+    
+    fieldsets = (
+        ('Información Básica', {
+            'fields': ('id', 'nombre', 'categoria', 'tipo')
+        }),
+        ('Control de Stock', {
+            'fields': ('stock', 'stockMinimo', 'unidad')
+        }),
+        ('Información Comercial', {
+            'fields': ('precio', 'proveedor')
+        }),
+        ('Fechas', {
+            'fields': ('fechaIngreso', 'ultimaVenta')
+        }),
+        ('Auditoría', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
 
 
 @admin.register(Varilla)

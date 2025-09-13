@@ -20,12 +20,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'corsheaders',  # Agregado para compatibilidad con frontend
     'apps.agenda',
     'apps.clients',
+    'apps.configurations',  # Nueva app de configuraciones
     'apps.contracts',
     'apps.dashboard',
     'apps.inventory',
     'apps.materials',
+    'apps.notifications',  # Nueva app de notificaciones
     'apps.orders',
     'apps.production',
     'apps.tenants',
@@ -35,6 +38,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Agregado para compatibilidad con frontend
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -67,7 +71,7 @@ WSGI_APPLICATION = 'fotostudio.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'AV2',  # Cambiar por el nombre de la base de datos
+        'NAME': 'AV1',  # Cambiar por el nombre de la base de datos
         'USER': 'root',   # Cambiar por el usuario de la base de datos
         'PASSWORD': '123456',   # Cambiar por la contraseña de la base de datos
         'HOST': 'localhost',
@@ -114,3 +118,27 @@ SIMPLE_JWT = {
     'SIGNING_KEY': SECRET_KEY,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+# Configuración CORS para compatibilidad con frontend
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Frontend local
+    "http://localhost:5173",  # Vite dev server
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:5173",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True  # Solo para desarrollo - cambiar en producción
+
+# Headers permitidos para CORS
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]

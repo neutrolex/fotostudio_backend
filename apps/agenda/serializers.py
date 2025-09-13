@@ -7,9 +7,7 @@ from .models import Agenda
 
 
 class AgendaSerializer(serializers.ModelSerializer):
-    """Serializer para agenda/citas."""
-    user_nombre = serializers.CharField(source='user.full_name', read_only=True)
-    user_email = serializers.CharField(source='user.email', read_only=True)
+    """Serializer para agenda/citas compatible con frontend."""
     
     class Meta:
         model = Agenda

@@ -2,9 +2,10 @@
 Vistas para la app de inventario.
 """
 
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from django.db.models import F
 from django.utils import timezone
 
@@ -20,6 +21,7 @@ from .serializers import (
     ProductoTerminadoSerializer, MovimientoInventarioSerializer,
     StockAlertSerializer, StockReportSerializer
 )
+from apps.users.permissions import CanManageInventory
 
 
 # Views para Varillas
@@ -27,6 +29,7 @@ class VarillaListView(generics.ListCreateAPIView):
     """Lista y creación de varillas."""
     queryset = Varilla.objects.all()
     serializer_class = VarillaSerializer
+    permission_classes = [CanManageInventory]
     
     def get_queryset(self):
         queryset = Varilla.objects.all()
@@ -40,6 +43,7 @@ class VarillaDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Detalle, actualización y eliminación de varillas."""
     queryset = Varilla.objects.all()
     serializer_class = VarillaSerializer
+    permission_classes = [CanManageInventory]
 
 
 # Views para Pinturas y Acabados
@@ -47,6 +51,7 @@ class PinturaAcabadoListView(generics.ListCreateAPIView):
     """Lista y creación de pinturas y acabados."""
     queryset = PinturaAcabado.objects.all()
     serializer_class = PinturaAcabadoSerializer
+    permission_classes = [CanManageInventory]
     
     def get_queryset(self):
         queryset = PinturaAcabado.objects.all()
@@ -60,6 +65,7 @@ class PinturaAcabadoDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Detalle, actualización y eliminación de pinturas y acabados."""
     queryset = PinturaAcabado.objects.all()
     serializer_class = PinturaAcabadoSerializer
+    permission_classes = [CanManageInventory]
 
 
 # Views para Materiales de Impresión
@@ -67,6 +73,7 @@ class MaterialImpresionListView(generics.ListCreateAPIView):
     """Lista y creación de materiales de impresión."""
     queryset = MaterialImpresion.objects.all()
     serializer_class = MaterialImpresionSerializer
+    permission_classes = [CanManageInventory]
     
     def get_queryset(self):
         queryset = MaterialImpresion.objects.all()
@@ -80,6 +87,7 @@ class MaterialImpresionDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Detalle, actualización y eliminación de materiales de impresión."""
     queryset = MaterialImpresion.objects.all()
     serializer_class = MaterialImpresionSerializer
+    permission_classes = [CanManageInventory]
 
 
 # Views para Materiales de Recordatorio
@@ -87,6 +95,7 @@ class MaterialRecordatorioListView(generics.ListCreateAPIView):
     """Lista y creación de materiales de recordatorio."""
     queryset = MaterialRecordatorio.objects.all()
     serializer_class = MaterialRecordatorioSerializer
+    permission_classes = [CanManageInventory]
     
     def get_queryset(self):
         queryset = MaterialRecordatorio.objects.all()
@@ -100,6 +109,7 @@ class MaterialRecordatorioDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Detalle, actualización y eliminación de materiales de recordatorio."""
     queryset = MaterialRecordatorio.objects.all()
     serializer_class = MaterialRecordatorioSerializer
+    permission_classes = [CanManageInventory]
 
 
 # Views para Software y Equipos
@@ -107,6 +117,7 @@ class SoftwareEquipoListView(generics.ListCreateAPIView):
     """Lista y creación de software y equipos."""
     queryset = SoftwareEquipo.objects.all()
     serializer_class = SoftwareEquipoSerializer
+    permission_classes = [CanManageInventory]
     
     def get_queryset(self):
         queryset = SoftwareEquipo.objects.all()
@@ -120,6 +131,7 @@ class SoftwareEquipoDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Detalle, actualización y eliminación de software y equipos."""
     queryset = SoftwareEquipo.objects.all()
     serializer_class = SoftwareEquipoSerializer
+    permission_classes = [CanManageInventory]
 
 
 # Views para Materiales de Pintura
@@ -127,6 +139,7 @@ class MaterialPinturaListView(generics.ListCreateAPIView):
     """Lista y creación de materiales de pintura."""
     queryset = MaterialPintura.objects.all()
     serializer_class = MaterialPinturaSerializer
+    permission_classes = [CanManageInventory]
     
     def get_queryset(self):
         queryset = MaterialPintura.objects.all()
@@ -140,6 +153,7 @@ class MaterialPinturaDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Detalle, actualización y eliminación de materiales de pintura."""
     queryset = MaterialPintura.objects.all()
     serializer_class = MaterialPinturaSerializer
+    permission_classes = [CanManageInventory]
 
 
 # Views para Materiales de Diseño
@@ -147,6 +161,7 @@ class MaterialDisenoListView(generics.ListCreateAPIView):
     """Lista y creación de materiales de diseño."""
     queryset = MaterialDiseno.objects.all()
     serializer_class = MaterialDisenoSerializer
+    permission_classes = [CanManageInventory]
     
     def get_queryset(self):
         queryset = MaterialDiseno.objects.all()
@@ -160,6 +175,7 @@ class MaterialDisenoDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Detalle, actualización y eliminación de materiales de diseño."""
     queryset = MaterialDiseno.objects.all()
     serializer_class = MaterialDisenoSerializer
+    permission_classes = [CanManageInventory]
 
 
 # Views para Productos Terminados
@@ -167,6 +183,7 @@ class ProductoTerminadoListView(generics.ListCreateAPIView):
     """Lista y creación de productos terminados."""
     queryset = ProductoTerminado.objects.all()
     serializer_class = ProductoTerminadoSerializer
+    permission_classes = [CanManageInventory]
     
     def get_queryset(self):
         queryset = ProductoTerminado.objects.all()
@@ -187,6 +204,7 @@ class ProductoTerminadoDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Detalle, actualización y eliminación de productos terminados."""
     queryset = ProductoTerminado.objects.all()
     serializer_class = ProductoTerminadoSerializer
+    permission_classes = [CanManageInventory]
 
 
 # Views para Movimientos de Inventario
@@ -194,6 +212,7 @@ class MovimientoInventarioListView(generics.ListCreateAPIView):
     """Lista y creación de movimientos de inventario."""
     queryset = MovimientoInventario.objects.all()
     serializer_class = MovimientoInventarioSerializer
+    permission_classes = [CanManageInventory]
     
     def get_queryset(self):
         queryset = MovimientoInventario.objects.all()
@@ -214,6 +233,7 @@ class MovimientoInventarioDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Detalle, actualización y eliminación de movimientos de inventario."""
     queryset = MovimientoInventario.objects.all()
     serializer_class = MovimientoInventarioSerializer
+    permission_classes = [CanManageInventory]
 
 
 # Views especiales para alertas y reportes
@@ -385,9 +405,181 @@ class InventoryListView(generics.ListCreateAPIView):
     """Lista y creación de inventario (legacy)."""
     queryset = Inventario.objects.all()
     serializer_class = InventarioSerializer
+    permission_classes = [CanManageInventory]
+    
+    def get_queryset(self):
+        """Filtrar inventario por tenant del usuario autenticado"""
+        from apps.tenants.models import Tenant
+        tenant = Tenant.objects.get(id=self.request.user.tenant_id)
+        return Inventario.objects.filter(tenant=tenant)
+    
+    def perform_create(self, serializer):
+        """Asignar automáticamente el tenant del usuario autenticado"""
+        from apps.tenants.models import Tenant
+        tenant = Tenant.objects.get(id=self.request.user.tenant_id)
+        serializer.save(tenant=tenant)
 
 
 class InventoryDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Detalle, actualización y eliminación de inventario (legacy)."""
     queryset = Inventario.objects.all()
     serializer_class = InventarioSerializer
+    permission_classes = [CanManageInventory]
+    
+    def get_queryset(self):
+        """Filtrar inventario por tenant del usuario autenticado"""
+        from apps.tenants.models import Tenant
+        tenant = Tenant.objects.get(id=self.request.user.tenant_id)
+        return Inventario.objects.filter(tenant=tenant)
+
+
+class LowStockView(APIView):
+    """
+    Vista para obtener items con stock bajo.
+    
+    Retorna todos los items del inventario que tienen stock
+    igual o menor al stock mínimo definido.
+    
+    Características:
+        - Solo usuarios autenticados
+        - Agrupa por tipo de material
+        - Incluye información de ubicación
+        - Calcula diferencia de stock
+    
+    Endpoint: GET /api/inventory/low-stock/
+    """
+    
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+        """
+        Obtiene todos los items con stock bajo.
+        
+        Args:
+            request: Objeto de solicitud HTTP
+            
+        Returns:
+            Response: Lista de items con stock bajo
+        """
+        try:
+            low_stock_items = []
+            
+            # Varillas con stock bajo
+            varillas = Varilla.objects.filter(stock__lte=F('minimo'))
+            for varilla in varillas:
+                low_stock_items.append({
+                    'id': varilla.id,
+                    'nombre': varilla.nombre,
+                    'tipo': 'varilla',
+                    'stock_actual': varilla.stock,
+                    'stock_minimo': varilla.minimo,
+                    'diferencia': varilla.stock - varilla.minimo,
+                    'precio': float(varilla.precio) if varilla.precio else 0,
+                    'ubicacion': 'Almacén Principal',
+                    'fecha_alerta': timezone.now().isoformat()
+                })
+            
+            # Pinturas y acabados con stock bajo
+            pinturas = PinturaAcabado.objects.filter(stock__lte=F('minimo'))
+            for pintura in pinturas:
+                low_stock_items.append({
+                    'id': pintura.id,
+                    'nombre': pintura.nombre,
+                    'tipo': 'pintura_acabado',
+                    'stock_actual': pintura.stock,
+                    'stock_minimo': pintura.minimo,
+                    'diferencia': pintura.stock - pintura.minimo,
+                    'precio': float(pintura.precio) if pintura.precio else 0,
+                    'ubicacion': 'Almacén Pinturas',
+                    'fecha_alerta': timezone.now().isoformat()
+                })
+            
+            # Materiales de impresión con stock bajo
+            materiales_impresion = MaterialImpresion.objects.filter(stock__lte=F('minimo'))
+            for material in materiales_impresion:
+                low_stock_items.append({
+                    'id': material.id,
+                    'nombre': material.nombre,
+                    'tipo': 'material_impresion',
+                    'stock_actual': material.stock,
+                    'stock_minimo': material.minimo,
+                    'diferencia': material.stock - material.minimo,
+                    'precio': float(material.precio) if material.precio else 0,
+                    'ubicacion': 'Almacén Impresión',
+                    'fecha_alerta': timezone.now().isoformat()
+                })
+            
+            # Materiales de recordatorio con stock bajo
+            materiales_recordatorio = MaterialRecordatorio.objects.filter(stock__lte=F('minimo'))
+            for material in materiales_recordatorio:
+                low_stock_items.append({
+                    'id': material.id,
+                    'nombre': material.nombre,
+                    'tipo': 'material_recordatorio',
+                    'stock_actual': material.stock,
+                    'stock_minimo': material.minimo,
+                    'diferencia': material.stock - material.minimo,
+                    'precio': float(material.precio) if material.precio else 0,
+                    'ubicacion': 'Almacén Recordatorios',
+                    'fecha_alerta': timezone.now().isoformat()
+                })
+            
+            # Software y equipos con stock bajo
+            software_equipos = SoftwareEquipo.objects.filter(stock__lte=F('minimo'))
+            for equipo in software_equipos:
+                low_stock_items.append({
+                    'id': equipo.id,
+                    'nombre': equipo.nombre,
+                    'tipo': 'software_equipo',
+                    'stock_actual': equipo.stock,
+                    'stock_minimo': equipo.minimo,
+                    'diferencia': equipo.stock - equipo.minimo,
+                    'precio': float(equipo.precio) if equipo.precio else 0,
+                    'ubicacion': 'Almacén Equipos',
+                    'fecha_alerta': timezone.now().isoformat()
+                })
+            
+            # Materiales de pintura con stock bajo
+            materiales_pintura = MaterialPintura.objects.filter(stock__lte=F('minimo'))
+            for material in materiales_pintura:
+                low_stock_items.append({
+                    'id': material.id,
+                    'nombre': material.nombre,
+                    'tipo': 'material_pintura',
+                    'stock_actual': material.stock,
+                    'stock_minimo': material.minimo,
+                    'diferencia': material.stock - material.minimo,
+                    'precio': float(material.precio) if material.precio else 0,
+                    'ubicacion': 'Almacén Pinturas',
+                    'fecha_alerta': timezone.now().isoformat()
+                })
+            
+            # Materiales de diseño con stock bajo
+            materiales_diseno = MaterialDiseno.objects.filter(stock__lte=F('minimo'))
+            for material in materiales_diseno:
+                low_stock_items.append({
+                    'id': material.id,
+                    'nombre': material.nombre,
+                    'tipo': 'material_diseno',
+                    'stock_actual': material.stock,
+                    'stock_minimo': material.minimo,
+                    'diferencia': material.stock - material.minimo,
+                    'precio': float(material.precio) if material.precio else 0,
+                    'ubicacion': 'Almacén Diseño',
+                    'fecha_alerta': timezone.now().isoformat()
+                })
+            
+            # Ordenar por diferencia (más críticos primero)
+            low_stock_items.sort(key=lambda x: x['diferencia'])
+            
+            return Response({
+                'items': low_stock_items,
+                'total_items': len(low_stock_items),
+                'message': f'Se encontraron {len(low_stock_items)} items con stock bajo'
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response({
+                'error': 'Error al obtener items con stock bajo',
+                'message': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

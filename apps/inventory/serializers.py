@@ -11,18 +11,45 @@ from .models import (
 
 
 class InventarioSerializer(serializers.ModelSerializer):
-    """Serializer para inventario."""
+    """
+    Serializer para inventario compatible con el frontend.
+    """
     is_low_stock = serializers.ReadOnlyField()
     
     class Meta:
         model = Inventario
-        fields = '__all__'
-        read_only_fields = ('id', 'created_at', 'updated_at')
+        fields = [
+            'id', 'nombre', 'categoria', 'tipo', 'stock', 'stockMinimo', 
+            'unidad', 'precio', 'proveedor', 'fechaIngreso', 'ultimaVenta', 'is_low_stock'
+        ]
+        read_only_fields = ['id', 'fechaIngreso', 'is_low_stock', 'tenant']
     
-    def validate_stock_actual(self, value):
+    def to_representation(self, instance):
+        """Formatear la respuesta para compatibilidad con frontend."""
+        data = super().to_representation(instance)
+        
+        # Formatear fechas
+        if data.get('fechaIngreso'):
+            data['fechaIngreso'] = instance.fechaIngreso.strftime('%Y-%m-%d')
+        if data.get('ultimaVenta'):
+            data['ultimaVenta'] = instance.ultimaVenta.strftime('%Y-%m-%d')
+        
+        # Formatear precio
+        if data.get('precio'):
+            data['precio'] = float(instance.precio)
+        
+        return data
+    
+    def validate_stock(self, value):
         """Validar stock no negativo."""
         if value < 0:
             raise serializers.ValidationError("El stock no puede ser negativo")
+        return value
+    
+    def validate_stockMinimo(self, value):
+        """Validar stock mínimo no negativo."""
+        if value < 0:
+            raise serializers.ValidationError("El stock mínimo no puede ser negativo")
         return value
 
 

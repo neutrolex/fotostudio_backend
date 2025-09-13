@@ -15,6 +15,7 @@ from .serializers import (
     MovimientoInventarioSerializer, ProductionReportSerializer,
     WasteReportSerializer, ProductionEfficiencySerializer
 )
+from apps.users.permissions import CanManageProduction
 
 
 # Views para Órdenes de Producción
@@ -22,23 +23,37 @@ class ProductionListView(generics.ListCreateAPIView):
     """Lista y creación de órdenes de producción."""
     queryset = OrdenProduccion.objects.all()
     serializer_class = OrdenProduccionSerializer
+    permission_classes = [CanManageProduction]
     
     def get_queryset(self):
-        queryset = OrdenProduccion.objects.all()
-        tenant_id = self.request.query_params.get('tenant_id')
-        estado = self.request.query_params.get('estado')
+        """Filtrar órdenes por tenant del usuario autenticado"""
+        from apps.tenants.models import Tenant
+        tenant = Tenant.objects.get(id=self.request.user.tenant_id)
+        queryset = OrdenProduccion.objects.filter(tenant_id=tenant.id)
         
-        if tenant_id:
-            queryset = queryset.filter(tenant_id=tenant_id)
+        estado = self.request.query_params.get('estado')
         if estado:
             queryset = queryset.filter(estado=estado)
         return queryset
+    
+    def perform_create(self, serializer):
+        """Asignar automáticamente el tenant del usuario autenticado"""
+        from apps.tenants.models import Tenant
+        tenant = Tenant.objects.get(id=self.request.user.tenant_id)
+        serializer.save(tenant_id=tenant.id)
 
 
 class ProductionDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Detalle, actualización y eliminación de órdenes de producción."""
     queryset = OrdenProduccion.objects.all()
     serializer_class = OrdenProduccionSerializer
+    permission_classes = [CanManageProduction]
+    
+    def get_queryset(self):
+        """Filtrar órdenes por tenant del usuario autenticado"""
+        from apps.tenants.models import Tenant
+        tenant = Tenant.objects.get(id=self.request.user.tenant_id)
+        return OrdenProduccion.objects.filter(tenant_id=tenant.id)
 
 
 # Views para Cuadros
@@ -46,6 +61,7 @@ class CuadroListView(generics.ListCreateAPIView):
     """Lista y creación de cuadros."""
     queryset = Cuadro.objects.all()
     serializer_class = CuadroSerializer
+    permission_classes = [CanManageProduction]
     
     def get_queryset(self):
         queryset = Cuadro.objects.all()
@@ -66,6 +82,7 @@ class CuadroDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Detalle, actualización y eliminación de cuadros."""
     queryset = Cuadro.objects.all()
     serializer_class = CuadroSerializer
+    permission_classes = [CanManageProduction]
 
 
 # Views para Detalles de Orden
@@ -73,6 +90,7 @@ class DetalleOrdenListView(generics.ListCreateAPIView):
     """Lista y creación de detalles de orden."""
     queryset = DetalleOrden.objects.all()
     serializer_class = DetalleOrdenSerializer
+    permission_classes = [CanManageProduction]
     
     def get_queryset(self):
         queryset = DetalleOrden.objects.all()
@@ -90,6 +108,7 @@ class DetalleOrdenDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Detalle, actualización y eliminación de detalles de orden."""
     queryset = DetalleOrden.objects.all()
     serializer_class = DetalleOrdenSerializer
+    permission_classes = [CanManageProduction]
 
 
 # Views para Movimientos de Inventario en Producción
@@ -97,6 +116,7 @@ class MovimientoInventarioListView(generics.ListCreateAPIView):
     """Lista y creación de movimientos de inventario en producción."""
     queryset = MovimientoInventario.objects.all()
     serializer_class = MovimientoInventarioSerializer
+    permission_classes = [CanManageProduction]
     
     def get_queryset(self):
         queryset = MovimientoInventario.objects.all()
@@ -120,6 +140,7 @@ class MovimientoInventarioDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Detalle, actualización y eliminación de movimientos de inventario."""
     queryset = MovimientoInventario.objects.all()
     serializer_class = MovimientoInventarioSerializer
+    permission_classes = [CanManageProduction]
 
 
 # Views especiales para reportes y funcionalidades

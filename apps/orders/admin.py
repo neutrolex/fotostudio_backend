@@ -1,37 +1,53 @@
 from django.contrib import admin
-from .models import Pedido, DetallePedido
+from .models import Pedido, Proyecto
 
 
 @admin.register(Pedido)
 class PedidoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'cliente_id', 'fecha_pedido', 'fecha_entrega_estimada', 'estado', 'total', 'created_at')
-    list_filter = ('estado', 'fecha_pedido', 'created_at')
-    search_fields = ('id', 'cliente_id', 'estado')
-    readonly_fields = ('id', 'created_at', 'updated_at')
-    date_hierarchy = 'fecha_pedido'
-    ordering = ('-created_at',)
+    list_display = ('id', 'cliente', 'servicio', 'estado', 'fecha_actualizacion')
+    list_filter = ('estado', 'servicio')
+    search_fields = ('id', 'cliente', 'servicio', 'estado')
+    readonly_fields = ('id', 'fecha_actualizacion')
+    ordering = ('-fecha_actualizacion',)
     
     fieldsets = (
         ('Información Básica', {
-            'fields': ('id', 'tenant_id', 'cliente_id')
+            'fields': ('id', 'cliente', 'servicio', 'estado')
         }),
-        ('Fechas', {
-            'fields': ('fecha_pedido', 'fecha_entrega_estimada')
-        }),
-        ('Estado y Total', {
-            'fields': ('estado', 'total')
+        ('Detalles del Pedido', {
+            'fields': ('fotografias', 'diseño', 'detalles')
         }),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at'),
+            'fields': ('fecha_actualizacion',),
             'classes': ('collapse',)
         }),
     )
 
 
-@admin.register(DetallePedido)
-class DetallePedidoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'pedido_id', 'item_type', 'item_id', 'cantidad', 'precio_unitario', 'subtotal')
-    list_filter = ('item_type', 'created_at')
-    search_fields = ('pedido_id', 'item_type', 'item_id')
-    readonly_fields = ('id', 'created_at', 'updated_at')
-    ordering = ('-created_at',)
+@admin.register(Proyecto)
+class ProyectoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'nombre', 'cliente', 'tipo', 'estado', 'fechaInicio', 'fechaEntrega', 'presupuesto')
+    list_filter = ('estado', 'tipo', 'fechaInicio')
+    search_fields = ('id', 'nombre', 'cliente', 'tipo', 'estado')
+    readonly_fields = ('id', 'fecha_creacion', 'fecha_actualizacion')
+    date_hierarchy = 'fechaInicio'
+    ordering = ('-fechaInicio',)
+    
+    fieldsets = (
+        ('Información Básica', {
+            'fields': ('id', 'nombre', 'cliente', 'tipo', 'estado')
+        }),
+        ('Fechas', {
+            'fields': ('fechaInicio', 'fechaEntrega')
+        }),
+        ('Información Financiera', {
+            'fields': ('presupuesto',)
+        }),
+        ('Detalles del Proyecto', {
+            'fields': ('descripcion',)
+        }),
+        ('Auditoría', {
+            'fields': ('fecha_creacion', 'fecha_actualizacion'),
+            'classes': ('collapse',)
+        }),
+    )

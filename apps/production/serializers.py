@@ -61,7 +61,8 @@ class OrdenProduccionSerializer(serializers.ModelSerializer):
         model = OrdenProduccion
         fields = [
             'id', 'tenant_id', 'fecha_creacion', 'solicitado_por', 'responsable_produccion',
-            'estado', 'created_at', 'updated_at', 'numero_orden'
+            'estado', 'descripcion', 'fecha_inicio', 'fecha_entrega', 'prioridad', 'observaciones',
+            'created_at', 'updated_at', 'numero_orden'
         ]
         read_only_fields = ('id', 'created_at', 'updated_at', 'numero_orden')
         extra_kwargs = {
@@ -69,7 +70,12 @@ class OrdenProduccionSerializer(serializers.ModelSerializer):
             'fecha_creacion': {'required': False},
             'solicitado_por': {'required': False, 'allow_blank': True},
             'responsable_produccion': {'required': False, 'allow_blank': True},
-            'estado': {'required': False, 'allow_blank': True}
+            'estado': {'required': False, 'allow_blank': True},
+            'descripcion': {'required': False, 'allow_blank': True},
+            'fecha_inicio': {'required': False},
+            'fecha_entrega': {'required': False},
+            'prioridad': {'required': False, 'allow_blank': True},
+            'observaciones': {'required': False, 'allow_blank': True}
         }
     
     def create(self, validated_data):

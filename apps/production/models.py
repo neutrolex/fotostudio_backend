@@ -14,6 +14,19 @@ class OrdenProduccion(models.Model):
         ('completada', 'Completada'),
         ('cancelada', 'Cancelada')
     ], default='pendiente')
+    
+    # Campos adicionales para compatibilidad con frontend
+    descripcion = models.TextField(blank=True, null=True, help_text="Descripción de la orden de producción")
+    fecha_inicio = models.DateField(blank=True, null=True, help_text="Fecha de inicio de producción")
+    fecha_entrega = models.DateField(blank=True, null=True, help_text="Fecha de entrega estimada")
+    prioridad = models.CharField(max_length=20, choices=[
+        ('baja', 'Baja'),
+        ('media', 'Media'),
+        ('alta', 'Alta'),
+        ('urgente', 'Urgente')
+    ], default='media', help_text="Prioridad de la orden")
+    observaciones = models.TextField(blank=True, null=True, help_text="Observaciones adicionales")
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

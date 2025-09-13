@@ -52,4 +52,5 @@ urlpatterns = [
     path('alerts/', views.stock_alerts, name='stock-alerts'),
     path('report/', views.stock_report, name='stock-report'),
     path('adjust-stock/', views.adjust_stock, name='adjust-stock'),
+    path('low-stock/', views.LowStockView.as_view(), name='inventory-low-stock'),
 ]

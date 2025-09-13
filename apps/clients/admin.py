@@ -1,32 +1,29 @@
 from django.contrib import admin
-from .models import Cliente
+from .models import Client
 
 
-@admin.register(Cliente)
-class ClienteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'client_type', 'company_name', 'email', 'phone', 'created_at')
-    list_filter = ('client_type', 'created_at')
-    search_fields = ('name', 'email', 'phone', 'company_name')
-    readonly_fields = ('id', 'created_at', 'updated_at')
-    ordering = ('-created_at',)
+@admin.register(Client)
+class ClientAdmin(admin.ModelAdmin):
+    list_display = ('id', 'nombre', 'tipo', 'contacto', 'email', 'ie', 'fecha_registro')
+    list_filter = ('tipo', 'fecha_registro')
+    search_fields = ('nombre', 'email', 'contacto', 'ie')
+    readonly_fields = ('id', 'fecha_registro', 'total_pedidos', 'monto_total')
+    ordering = ('-fecha_registro',)
     
     fieldsets = (
         ('Información Básica', {
-            'fields': ('id', 'tenant_id', 'name', 'client_type')
-        }),
-        ('Información de Empresa', {
-            'fields': ('company_name', 'contact'),
-            'classes': ('collapse',)
-        }),
-        ('Contacto', {
-            'fields': ('email', 'phone', 'address')
+            'fields': ('id', 'nombre', 'tipo', 'contacto', 'email')
         }),
         ('Información Adicional', {
-            'fields': ('additional_details',),
+            'fields': ('ie', 'direccion', 'detalles'),
+            'classes': ('collapse',)
+        }),
+        ('Estadísticas', {
+            'fields': ('total_pedidos', 'monto_total', 'ultimo_pedido'),
             'classes': ('collapse',)
         }),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at'),
+            'fields': ('fecha_registro', 'created_at', 'updated_at'),
             'classes': ('collapse',)
         }),
     )
